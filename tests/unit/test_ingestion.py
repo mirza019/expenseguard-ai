@@ -36,3 +36,19 @@ def test_size(monkeypatch):
     monkeypatch.setattr("app.services.ingestion.MAX_BYTES", 2)
     with pytest.raises(IngestionError, match="10 MB"):
         read_upload(b"123", "a.csv")
+
+
+def test_native_excel_dates_validate():
+    from datetime import datetime
+
+    from app.services.validation import validate
+    from scripts.generate_data import generate
+
+    frame, _ = generate()
+    frame = frame.iloc[20:21].copy()
+    frame["invoice_date"] = datetime(2025, 1, 2)
+    out = BytesIO()
+    frame.to_excel(out, index=False)
+    data = validate(read_upload(out.getvalue(), "native.xlsx"))
+    assert len(data.eligible) == 1
+    assert data.eligible.iloc[0]["month"] == "2025-01"

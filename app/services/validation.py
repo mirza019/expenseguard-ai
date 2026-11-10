@@ -78,7 +78,10 @@ def validate(frame: pd.DataFrame) -> ValidatedData:
     clean["currency"] = clean["currency"].str.upper()
     clean["amount_cents"] = pd.array(clean["amount"].map(cents), dtype="Int64")
     clean["budget_cents"] = pd.array(clean["budget_amount"].map(cents), dtype="Int64")
-    clean["date"] = pd.to_datetime(clean["invoice_date"], format="%Y-%m-%d", errors="coerce")
+    # Excel native date cells often arrive as ISO midnight strings. Preserve source text.
+    date_text = clean["invoice_date"].str.replace(r"[ T]00:00:00$", "", regex=True)
+    date_text = date_text.where(date_text.str.fullmatch(r"\d{4}-\d{2}-\d{2}"), "")
+    clean["date"] = pd.to_datetime(date_text, format="%Y-%m-%d", errors="coerce")
     clean["month"] = clean["date"].dt.strftime("%Y-%m")
     clean["eligible"] = True
     issues = []
@@ -138,7 +141,7 @@ def validate(frame: pd.DataFrame) -> ValidatedData:
         [
             "Trimmed surrounding whitespace in analytical fields; source retained unchanged.",
             "Normalized currency to uppercase; only EUR is supported; no FX conversion.",
-            "Parsed ISO dates and exact nonnegative cents; invalid financial rows excluded explicitly.",
+            "Parsed ISO dates (including Excel midnight cells) and exact nonnegative cents; invalid financial rows excluded explicitly.",
             "Retained duplicate records for audit; no automatic deduplication.",
             "Budget allocation grain: month, department, cost_center; conflicts reported, not summed.",
         ],

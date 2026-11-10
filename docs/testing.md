@@ -35,7 +35,7 @@ package index but test execution itself requires no external service.
 
 ## Measured local result
 
-Linux, Python 3.12.14: **49 tests passed; 100% statement coverage of 356 core statements** at initial
+Linux, Python 3.12.14: **50 tests passed; 100% statement coverage of 358 core statements** at initial
 full verification. Ruff and formatting checks passed. This number describes the tested revision;
 rerun the commands after changes. Do not interpret statement coverage as complete branch coverage.
 

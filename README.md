@@ -136,7 +136,7 @@ transaction_id,invoice_id,invoice_date,vendor,department,cost_center,category,
 amount,currency,budget_amount,description,payment_status
 ```
 
-- `invoice_date`: ISO `YYYY-MM-DD`; analytical month is derived from it.
+- `invoice_date`: ISO `YYYY-MM-DD` or a native Excel midnight date cell; analytical month is derived from it.
 - `amount`, `budget_amount`: nonnegative decimals with at most two decimal places;
   no thousands separators/currency symbols; maximum one billion EUR per field.
 - `currency`: EUR only after whitespace trimming and uppercasing.

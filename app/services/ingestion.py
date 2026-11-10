@@ -26,7 +26,7 @@ def read_upload(content: bytes, filename: str) -> pd.DataFrame:
     try:
         if extension == ".xlsx":
             with ZipFile(BytesIO(content)) as archive:
-                if sum(i.file_size for i in archive.infolist()) > 50 * MAX_BYTES:
+                if sum(i.file_size for i in archive.infolist()) > 5 * MAX_BYTES:
                     raise IngestionError("Workbook decompressed size exceeds the safe limit.")
             frame = pd.read_excel(
                 BytesIO(content), dtype=str, keep_default_na=False, nrows=MAX_ROWS + 1
