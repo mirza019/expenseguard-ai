@@ -1,4 +1,5 @@
 """Bounded in-memory expense file ingestion."""
+
 from io import BytesIO
 from pathlib import Path
 from zipfile import BadZipFile, ZipFile
@@ -27,15 +28,23 @@ def read_upload(content: bytes, filename: str) -> pd.DataFrame:
             with ZipFile(BytesIO(content)) as archive:
                 if sum(i.file_size for i in archive.infolist()) > 50 * MAX_BYTES:
                     raise IngestionError("Workbook decompressed size exceeds the safe limit.")
-            frame = pd.read_excel(BytesIO(content), dtype=str, keep_default_na=False,
-                                  nrows=MAX_ROWS + 1)
+            frame = pd.read_excel(
+                BytesIO(content), dtype=str, keep_default_na=False, nrows=MAX_ROWS + 1
+            )
         else:
-            frame = pd.read_csv(BytesIO(content), dtype=str, keep_default_na=False,
-                                nrows=MAX_ROWS + 1, on_bad_lines="error")
+            frame = pd.read_csv(
+                BytesIO(content),
+                dtype=str,
+                keep_default_na=False,
+                nrows=MAX_ROWS + 1,
+                on_bad_lines="error",
+            )
     except IngestionError:
         raise
     except (ValueError, UnicodeError, BadZipFile, KeyError, OSError) as exc:
-        raise IngestionError("Cannot parse the file. Check its format, encoding and headers.") from exc
+        raise IngestionError(
+            "Cannot parse the file. Check its format, encoding and headers."
+        ) from exc
     if frame.empty:
         raise IngestionError("The file contains no transactions.")
     if len(frame) > MAX_ROWS:

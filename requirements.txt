@@ -31,7 +31,7 @@ langgraph-sdk==0.4.14
 langsmith==0.14.17
 MarkupSafe==3.0.4
 narwhals==2.28.0
-numpy==2.5.4
+numpy==2.3.5
 openpyxl==3.1.5
 orjson==3.13.0
 ormsgpack==1.13.1

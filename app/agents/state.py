@@ -1,4 +1,5 @@
 """Explicit state and constrained model decisions."""
+
 from typing import Literal, TypedDict
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -6,22 +7,22 @@ from pydantic import BaseModel, ConfigDict, Field
 from app.services.validation import ToolResult, ValidatedData
 
 ACTIONS = {
-    'review_invoice': 'Check the invoice and approval evidence.',
-    'review_budget': 'Review allocation ownership and the expense approvals.',
-    'request_details': 'Request missing details from the record owner.',
-    'review_business_purpose': 'Confirm business purpose and supporting documentation.',
+    "review_invoice": "Check the invoice and approval evidence.",
+    "review_budget": "Review allocation ownership and the expense approvals.",
+    "request_details": "Request missing details from the record owner.",
+    "review_business_purpose": "Confirm business purpose and supporting documentation.",
 }
 
 
 class Recommendation(BaseModel):
-    model_config = ConfigDict(extra='forbid')
+    model_config = ConfigDict(extra="forbid")
     finding_id: str
-    action: Literal['review_invoice', 'review_budget', 'request_details', 'review_business_purpose']
+    action: Literal["review_invoice", "review_budget", "request_details", "review_business_purpose"]
 
 
 class Decision(BaseModel):
-    model_config = ConfigDict(extra='forbid')
-    tool: Literal['duplicates', 'budget', 'anomalies', 'missing_data', 'finish']
+    model_config = ConfigDict(extra="forbid")
+    tool: Literal["duplicates", "budget", "anomalies", "missing_data", "finish"]
     recommendations: list[Recommendation] = Field(default_factory=list, max_length=8)
 
 

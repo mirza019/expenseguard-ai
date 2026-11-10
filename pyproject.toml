@@ -17,3 +17,6 @@ source = ["app.services", "app.tools", "app.agents", "app.database"]
 [tool.coverage.report]
 show_missing = true
 fail_under = 80
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
