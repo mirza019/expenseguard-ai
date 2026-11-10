@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="ExpenseGuard AI: evidence-based financial auditing with optional local AI. Explore a fictional report or view your locally exported JSON report.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <title>ExpenseGuard AI · Audit report viewer</title>
+  <link rel="stylesheet" href="styles.css"><script type="module" src="app.mjs"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="#overview"><span class="brand-mark">EG</span>ExpenseGuard <b>AI</b></a>
+    <p class="eyebrow">FINANCIAL REVIEW WORKSPACE</p>
+    <nav aria-label="Main"><a href="#overview">Overview</a><a href="#findings">Audit findings</a><a href="#setup">Run the full application</a></nav>
+    <div class="sidebar-note"><span class="status-dot"></span> GitHub Pages report viewer<p>Full auditing and Ollama inference run on your own machine.</p></div>
+    <a class="repo-link" href="https://github.com/mirza019/expenseguard-ai">View source ↗</a>
+  </aside>
+  <main>
+    <header><div><p class="eyebrow">EXPENSE INTELLIGENCE / OVERVIEW</p><h1>Every finding, backed by evidence.</h1><p class="subtitle">Review financial risks, inspect supporting records, and keep decisions in human hands.</p></div><span class="pill">Local-first auditing</span></header>
+    <section class="notice"><strong>Report viewer, not a hosted Python backend.</strong> Explore the fictional demo, or open a JSON audit report exported by the local app. Files you open stay in this browser; this page does not upload them or run Ollama.</section>
+    <section class="toolbar" aria-label="Report controls"><button id="demo">Load fictional demo</button><label class="file-button" for="report-file">Open audit JSON<input id="report-file" type="file" accept=".json,application/json"></label><button id="download" class="secondary" disabled>Download current report</button><span id="source-label">No report loaded</span></section>
+    <p id="message" role="status" aria-live="polite">Load a report to begin.</p>
+    <section id="overview" aria-label="Report overview"><div id="kpis" class="kpi-grid"></div>
+      <div class="analysis-grid"><article class="card"><p class="eyebrow">SPENDING DISTRIBUTION</p><h2>Expenses by department</h2><div id="department-chart" aria-label="Department expenses"></div></article>
+      <article class="card"><p class="eyebrow">AUDIT CONTEXT</p><h2>Understand the scope</h2><div id="scope"></div><p class="muted">A flag is an investigation lead, not proof of fraud. Possible duplicates remain in totals until reviewed.</p></article></div>
+    </section>
+    <section id="findings" class="card"><div class="section-title"><div><p class="eyebrow">EVIDENCE REGISTER</p><h2>Audit findings</h2></div><span id="finding-count" class="pill">0 findings</span></div>
+      <div class="filters"><label>Severity<select id="severity"><option value="all">All severities</option><option value="high">High</option><option value="medium">Medium</option></select></label><label>Search findings<input id="search" type="search" placeholder="Rule, transaction ID, or finding ID"></label></div>
+      <div class="table-scroll"><table><thead><tr><th>Finding</th><th>Severity</th><th>Rule</th><th>Transaction references</th><th>Evidence and next action</th></tr></thead><tbody id="finding-body"></tbody></table></div>
+    </section>
+    <section id="setup" class="setup-card"><div><p class="eyebrow">THE COMPLETE APPLICATION</p><h2>Clone. Start. Audit.</h2><p>The local Streamlit application includes CSV/XLSX uploads, four analytical tools, interactive charts, and a bounded LangGraph + ChatOllama agent.</p></div>
+      <pre><code>git clone https://github.com/mirza019/expenseguard-ai.git
+cd expenseguard-ai
+./start.sh</code></pre>
+      <p>Requires Python 3.11 or 3.12. Before the implementation PR is merged, check out <code>docs/project-documentation</code>. Install Ollama separately, then choose <strong>Download &amp; Enable AI</strong> inside the app. Deterministic audits work without it.</p>
+    </section>
+    <footer>Independent portfolio project · Fictional demo data · <a href="https://github.com/mirza019/expenseguard-ai/pull/1">Implementation review</a></footer>
+  </main>
+</body></html>

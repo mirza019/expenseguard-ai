@@ -55,7 +55,21 @@ All packages include initialization modules. The legacy three-row sample remains
 
 ## Verification boundary
 
-50 tests passed with 100% core statement coverage on Linux/Python 3.12.14; lint/formatting passed.
+75 tests passed with 100% core statement coverage; three frontend tests passed on Linux/Python 3.12.14; lint/formatting passed.
 Streamlit AppTest completed sample loading and the full audit. A real Streamlit server was started
 and its local /_stcore/health endpoint returned `ok`. No production deployment or merge was performed.
-Live Qwen inference, Mac hardware performance and a real browser screenshot remain unverified.
+Live Qwen inference, a real model download, Mac hardware performance, Windows PowerShell execution and a real browser screenshot remain unverified.
+
+## Follow-up: one-command setup and local AI management
+
+Main was reinspected and still contains only the scaffold. Active PR #1 preserves the complete
+unmerged prerequisite work. Consequently the follow-up stays on docs/project-documentation; the
+older feature/ai-agent is not reset, rebased or overwritten, and no conflicting branch is created
+from incomplete main. This implements the user's active-task-branch exception. Main is unchanged.
+
+New components: start.sh, optional start.ps1, scripts/check_environment.py, the SDK model manager,
+startup AI sidebar, LangChain ChatOllama inference, registered StructuredTools, static GitHub Pages
+report viewer, and manual-only Pages workflow. No automatic model download, merge or deployment.
+
+After review, enable Pages → GitHub Actions and manually dispatch the companion workflow. The
+static viewer does not replace the local Python/Ollama audit application.

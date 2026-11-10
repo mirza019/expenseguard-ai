@@ -22,7 +22,7 @@ Every run creates a new state. No global agent memory or cross-user checkpoint i
 
 ## Decisions and execution
 
-Agent mode sends a bounded summary of up to 40 findings to a loopback Ollama chat endpoint. The model
+Agent mode sends a bounded summary of up to 40 findings to LangChain ChatOllama using a loopback Ollama endpoint. The model
 returns a Pydantic/JSON-schema `Decision`: a registered tool or finish, plus optional finding-linked
 recommendations from four approved investigation actions. The planner receives executed tools and
 remaining tools after each step. User text is treated as data; no code/SQL/filesystem tool is registered.
@@ -31,7 +31,7 @@ Selection is dynamic: a focused request may finish early. The report lists actua
 marks fewer than four executed tools as partial. Deterministic mode runs all four checks, without
 claiming autonomous AI.
 
-Tool results are produced by Python. Validation checks tool status/identity, finite values, evidence,
+Tools are registered as LangChain StructuredTool instances, bound to the current validated upload. Only the fixed current_upload scope is accepted; no user-controlled SQL or data access is exposed. Tool results are produced by Python. Validation checks tool status/identity, finite values, evidence,
 aligned source-row/transaction references, independently summed actuals and budget reconciliations.
 Invalid IDs, repeated tools, unknown actions, malformed JSON and unavailable endpoints are rejected.
 Model prose is not trusted to introduce financial figures. Explanations use verified rule templates;
@@ -45,7 +45,7 @@ cannot execute a fifth. Failed model requests eventually change mode to determin
 remaining checks, never re-running successful tools. Deterministic completion can exceed a smaller
 custom *agent* call limit, but the registry still limits total distinct tool executions to four.
 
-Model request: 60-second network timeout, 600 output-token preference, 256 KB response cap, fixed
+Model request: 60-second network timeout, 600 output-token preference, 32 KB context cap, fixed
 loopback endpoint, schema validation. LangGraph recursion is bounded at 40. Model error text is not
 shown because endpoint responses could contain financial data. Failed tool execution stops the run
 with explicit errors and any successfully validated partial results. The UI warns about partial scope.
@@ -53,3 +53,12 @@ with explicit errors and any successfully validated partial results. The UI warn
 No live model is required for deterministic operation. Tests use controlled planners and mocked HTTP
 responses. Pulling and running Qwen3 and checking its tool decisions on a Mac are separate manual
 acceptance steps; the cloud environment has not verified actual model quality.
+
+## Runtime setup
+
+The SDK model manager checks the CLI separately from loopback service availability. It lists exact
+model tags and verifies metadata before enabling the UI. Downloads happen only through the explicit
+button; streaming progress is shown, generators are closed, exceptions are converted to safe setup
+errors, and the model is checked again after completion. No model download occurs on import,
+startup, in tests, or CI. ChatOllama initialization is lazy and validates installed model availability
+on an explicit audit request. The default is qwen3:4b-q4_K_M.

@@ -57,60 +57,105 @@ flowchart LR
 
 ### Technology
 
-Python 3.11+, Streamlit, pandas, DuckDB, Pydantic, LangGraph, requests/Ollama, Plotly, openpyxl,
+Python 3.11+, Streamlit, pandas, DuckDB, Pydantic, LangGraph, LangChain ChatOllama, the Ollama Python SDK, Plotly, openpyxl,
 pytest/pytest-cov, Ruff and GitHub Actions. Exact dependency versions are in `requirements.txt`.
-The application uses no microservices or container orchestration.
+The application uses no microservices or container orchestration. Node 22 is needed only for static frontend tests, not local app startup.
 
-## Run locally on macOS
+## Quick Start — one command after cloning
 
-Install Python 3.11 or 3.12, then:
+Supported: macOS Apple Silicon and Linux with **Python 3.11 or 3.12** already installed.
 
 ```bash
 git clone https://github.com/mirza019/expenseguard-ai.git
 cd expenseguard-ai
-# Before the implementation PR is merged, check out its head branch:
-git switch docs/project-documentation
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-cp .env.example .env
-python -m streamlit run app/main.py
+./start.sh
 ```
 
-Open the local URL printed by Streamlit. Click **Load fictional sample dataset**, open Overview,
-then run **Run complete deterministic audit**. The application remains usable without Ollama.
-A MacBook Air M3 with 16 GB RAM is the intended local machine; its actual inference performance
-must be checked on that hardware. Cloud tests used Linux/Python 3.12, not a Mac.
+Until PR #1 is merged, run `git switch docs/project-documentation` after cloning to use the
+complete implementation. Main deliberately remains unchanged pending review.
 
-## Optional Ollama and Qwen3
+`start.sh` locates its own project root, creates `.venv`, installs exactly pinned dependencies,
+creates `.env` from the example without replacing existing values, creates local directories,
+generates the fictional sample if missing, checks configuration, and launches Streamlit bound to
+`127.0.0.1:8501`. No manual activation is required. It never installs privileged system software
+or downloads model weights. Use `bash start.sh` if execute permissions were lost.
 
-Install Ollama from its official macOS application at https://ollama.com/download.
-Start the Ollama application, or use `ollama serve` when no service is already running.
+Subsequent starts compare dependency fingerprints and installed package versions/imports. They skip
+pip when the environment is intact, and reinstall if requirements changed or a dependency is missing.
+Interrupted setup never writes a success stamp. Concurrent setup is blocked by a local lock.
+Use `EXPENSEGUARD_PYTHON=/path/to/python3.12 ./start.sh` to select an interpreter, or
+`./start.sh --server.port 8502` for another port. Do not expose the unauthenticated app publicly.
+
+Windows has an optional equivalent: `powershell -File start.ps1` or `pwsh -File start.ps1`.
+PowerShell startup is provided but not verified in this Linux environment; macOS/Linux are primary.
+Python/venv installs and first-time dependencies require internet. Once dependencies and a model
+are present, repeated local startup and auditing can work offline. Model weights remain in Ollama’s
+normal storage, never in the repository.
+
+## First-run AI setup
+
+The full dashboard and deterministic audits work **without Ollama or a GPU**.
+The sidebar checks the local service at startup (cached for 15 seconds) and shows:
+
+- **AI Ready:** the configured exact model tag is listed and model metadata is accessible.
+  Agent Mode becomes available automatically; no download happens.
+- **Model Download Required:** Ollama is reachable but the configured model is absent.
+  Click **Download & Enable AI** to pull weights, view per-layer progress, verify installation,
+  and enable Agent Mode.
+- **Ollama Unavailable:** setup instructions and deterministic auditing remain available.
+
+Install the Ollama macOS application separately from https://ollama.com/download and launch it.
+On Linux follow the official installation instructions and start the service. If installed but not
+running, use `ollama serve` in another terminal. The application never silently installs Ollama.
+
+Default model: **`qwen3:4b-q4_K_M`**. This quantized 4B model is intended for the MacBook Air M3
+with 16 GB RAM; live memory/latency must still be measured on that hardware. The download is several
+GB: reserve **at least 6 GB of free disk** as practical headroom; exact weight size is model/version
+dependent. Initial download needs internet. Successful retries reuse Ollama’s existing layers.
+A failed/interrupted download leaves Agent Mode disabled until installation is verified.
+
+You can alternatively install explicitly with the Ollama CLI:
 
 ```bash
-ollama pull qwen3:4b
-ollama show qwen3:4b
-ollama list
+ollama pull qwen3:4b-q4_K_M
+ollama show qwen3:4b-q4_K_M
 ```
 
-Use the quantized 4B model distribution and inspect `ollama show` to confirm its quantization.
-Set `OLLAMA_MODEL` to another installed model tag if necessary. Model availability and hardware
-memory requirements are external to this repository; no live model was pulled during cloud tests.
-
-`.env` configuration:
+`.env` is created automatically and ignored by Git:
 
 ```dotenv
 OLLAMA_URL=http://localhost:11434
-OLLAMA_MODEL=qwen3:4b
+OLLAMA_MODEL=qwen3:4b-q4_K_M
 LANGCHAIN_TRACING_V2=false
 LANGSMITH_TRACING=false
 ```
 
-Only HTTP loopback Ollama endpoints are allowed. No credentials are required. Never expose Ollama
-to the public internet. AI mode can make up to three failed model requests with default settings
-before fallback; each request has a 60-second network timeout. Results display the final mode,
-execution trace, tools actually run, and fallback events.
+Only HTTP loopback Ollama endpoints are allowed. `ChatOllama` is initialized lazily on an explicit
+agent request, verifies the model, and requests Pydantic-structured decisions. There are no inference
+calls or downloads at import time. SDK availability checks use a short timeout; inference has its
+own bounded timeout. API readiness confirms installation/reachability, not guaranteed GPU/CPU memory
+or generation quality; inference errors still use bounded retries and deterministic fallback.
+
+### Troubleshooting
+
+- **Python not found:** install Python 3.11/3.12, or set `EXPENSEGUARD_PYTHON` to its executable.
+- **Incomplete/wrong-version `.venv`:** stop the app, rename `.venv`, then rerun `./start.sh`.
+- **Linux cannot create venv:** install your distribution’s matching `python3-venv` package.
+- **Dependency install fails:** check internet/package-index access and rerun. No success stamp is
+  stored on failure. Changed or missing dependencies are automatically rechecked next time.
+- **Setup lock remains after a crash:** confirm no setup process is running, then remove
+  `.venv/.expenseguard-setup.lock` and retry. Never remove a live process’s lock.
+- **Ollama unavailable:** launch the app/service, confirm `ollama list` works, check `.env`, and
+  click **Refresh AI status**. A reachable loopback service works even if the CLI is not on PATH.
+- **Download fails:** check free disk, connectivity, and `ollama show`/the configured model tag.
+  Retry the button; the UI verifies installation after pulling rather than trusting a final message.
+- **Model already present under another tag:** either install the exact configured tag or update
+  `OLLAMA_MODEL`; tags are not silently treated as interchangeable.
+- **Slow/failed inference:** close memory-heavy apps, confirm the quantized model is installed,
+  shorten the audit goal, or continue with deterministic mode. No GPU is assumed.
+- **Port occupied:** stop the previous app or use `./start.sh --server.port 8502`.
+- **Offline first run:** dependencies and optional model weights must already be installed/cached;
+  there is no bundled model or claim that a fresh offline clone can install itself.
 
 ### What makes it agentic?
 
@@ -185,12 +230,35 @@ a budget overrun. Seeded random data also creates incidental outliers and review
 Data generation is not a claim of real-world detection performance. `sample_expenses.csv` is the
 legacy scaffold fixture and does not satisfy the new full upload schema; use `synthetic_expenses.csv`.
 
+## GitHub-hosted companion frontend
+
+`site/` contains a burgundy, responsive **static report viewer** for GitHub Pages. It can load a
+fictional demo or a locally exported JSON report, filter findings, inspect evidence, show spending
+and download the selected report. User-opened reports remain in the browser; there is no upload
+endpoint and no direct browser-to-Ollama access.
+
+GitHub Pages cannot execute Python, Streamlit, LangGraph or local Ollama. Full uploads and audits run
+through `./start.sh`. This separation avoids a separate cloud backend and keeps private expenses local.
+
+The Pages workflow is **manual only**. After reviewing/merging the implementation:
+
+1. Repository Settings → Pages → Source: GitHub Actions.
+2. Actions → **Publish GitHub Pages companion (manual)** → Run workflow.
+3. Use the deployment URL returned by GitHub (normally `https://mirza019.github.io/expenseguard-ai/`).
+
+No site is automatically deployed by pushes or PRs. Repository permissions may require an owner to
+enable Pages. Build the fictional demo locally with `python scripts/build_pages_demo.py`; generated
+`site/demo-report.json` is ignored by Git and built in the workflow. No private report is published.
+
 ## Testing and CI
 
 ```bash
+bash -n start.sh
+python scripts/check_environment.py
 python -m ruff check .
 python -m ruff format --check .
 python -m pytest --cov --cov-report=term-missing --cov-report=xml
+node --test tests/frontend/report.test.mjs
 ```
 
 CI runs on main/feature/docs pushes and PRs targeting main, with Python 3.11/3.12. It installs
@@ -224,7 +292,7 @@ git switch -c feature/your-change
 - Bounded upload size/row count/workbook expansion and bounded model response/call counts.
 - Downloaded finding CSV neutralizes leading spreadsheet-formula characters.
 - Original records are retained; automatic deduplication and silent financial corrections are avoided.
-- No authentication or production multiuser controls. Run locally for the MVP.
+- No authentication or production multiuser controls. The launcher binds to loopback; run locally for the MVP.
 
 ## Limitations and future improvements
 
@@ -238,7 +306,7 @@ payment decisions are implemented.
 Future work: separate budget-file ingestion, refunds/FX policy, case management, calibrated review
 thresholds, authenticated deployment and measured local model evaluations. For deployment later,
 first define authentication, authorized data handling, persistence and a secure model-hosting plan.
-A cloud Streamlit host cannot reach Ollama running on a visitor’s Mac through its own localhost.
+A cloud Streamlit host cannot reach Ollama running on a visitor’s Mac through its own localhost. The GitHub Pages companion does not attempt to do so.
 
 ## Documentation
 

@@ -5,7 +5,7 @@
 `app/main.py` composes upload, dashboard, audit, agent and reporting panels. Services perform ingestion,
 validation, tool registration and reporting. Tools return Pydantic results. The database adapter opens
 and closes one in-memory DuckDB connection per fixed aggregate query; it never accepts arbitrary SQL.
-LangGraph carries per-run state without shared checkpoints. Settings use `.env` only for local Ollama.
+LangGraph carries per-run state without shared checkpoints. Settings use `.env` for local Ollama. The model manager uses the Ollama Python SDK, and inference uses LangChain ChatOllama.
 
 ```mermaid
 flowchart TD
@@ -24,7 +24,7 @@ flowchart TD
 
 ## Data ownership and transformations
 
-The user owns uploaded data. No original data is written to disk. The normalized copy trims strings,
+The user owns uploaded data. No original uploaded financial data is written to disk. The launcher creates ignored environment/config/cache directories and uses the intentional fictional fixture. The normalized copy trims strings,
 uppercases currency, parses exact cents and dates, derives months, and marks financial eligibility.
 `source_row` refers to CSV/worksheet row numbers with row 1 reserved for headers. Duplicate IDs are
 not removed; row numbers are the stable evidence references. XLSX ingestion reads the first sheet.
@@ -63,7 +63,18 @@ and record the tested machine/model version. No model training or scheduled retr
 
 ## Deployment later
 
-The MVP is local. Before public deployment add authentication/authorization, data retention policies,
+The full audit application is local. A static companion report viewer is prepared for manual GitHub Pages hosting. Before public deployment add authentication/authorization, data retention policies,
 secure persistent storage and access controls. Localhost Ollama means the app server’s machine, not
 the visitor’s machine. Never expose an unauthenticated model endpoint or financial upload interface.
 CI validates code but does not deploy or merge.
+
+## One-command bootstrap
+
+`start.sh` resolves the root, selects Python 3.11/3.12, creates/reuses .venv, locks setup, checks exact
+distribution versions and imports, installs only when needed, preserves existing .env, generates a
+missing demo, validates configuration and execs Streamlit on loopback. A failed install cannot write
+a success stamp. Local model weights are managed solely by Ollama. `start.ps1` provides a Windows
+equivalent but remains unverified without PowerShell on the test machine.
+
+GitHub Pages serves only the report viewer. Its manual workflow builds a fixed fictional report; it
+never publishes private uploads, serves Python or connects a public browser to a private model.
