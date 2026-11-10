@@ -42,7 +42,8 @@ outside that denominator. This measures regression coverage, not financial fraud
 
 Real Chromium inspection captured all eight tabs at 1440×1000 and Overview at 390×844 after loading
 2,400 transactions, indexing policies and running the audit. No page errors or horizontal document
-overflow were observed. Screenshots are in `docs/screenshots`. Streamlit AppTest independently covers
+overflow were observed. Screenshots are in `docs/screenshots`. An actual browser run also selected October 2025, generated
+and downloaded the 14-page PDF and verified its EUR 6,220.13 actual expense total. Streamlit AppTest independently covers
 loading, model setup, audit, PDF download controls and session-cache behavior. PDF tests render actual
 A4 pages and inspect text bounds/pagination. See the release engineering report for final CI status.
 

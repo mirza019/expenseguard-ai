@@ -50,7 +50,8 @@ invalidate audit/PDF caches. A scoped agent audit supplies the dashboard and PDF
 Actual Chromium/Playwright inspection loaded 2,400 records, rebuilt policies, ran a complete audit and
 captured every section at 1440×1000 plus Overview at 390×844. Browser page errors: **0**. Horizontal
 mobile document overflow: **false**. Screenshots in `docs/screenshots` are actual application captures.
-Overview typography, card alignment and source/AI status were visually inspected. Browser screenshots do
+Overview typography, card alignment and source/AI status were visually inspected. The actual browser also selected October 2025, ran the indexed-policy audit, generated and downloaded
+a readable **14-page PDF (152,940 bytes)**, and verified its EUR 6,220.13 total. Browser screenshots do
 not prove accessibility certification or Mac/Safari behavior. Long tables retain native scrolling.
 
 ## C. RAG evaluation
