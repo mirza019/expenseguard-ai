@@ -1,8 +1,12 @@
+from pathlib import Path
+
 from streamlit.testing.v1 import AppTest
 
 
 def test_sample_and_complete_audit():
-    app = AppTest.from_file("app/main.py", default_timeout=60).run()
+    app = AppTest.from_file(
+        Path(__file__).resolve().parents[2] / "app/main.py", default_timeout=60
+    ).run()
     assert not app.exception
     app.button[0].click().run()
     assert not app.exception

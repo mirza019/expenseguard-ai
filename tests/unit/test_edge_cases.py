@@ -22,6 +22,7 @@ def test_invalid_all_financial_rows():
 
 def test_validation_other_failures():
     frame, _ = generate()
+    frame["budget_amount"] = frame["budget_amount"].astype(object)
     frame.loc[0, "budget_amount"] = "invalid"
     frame.loc[1, "payment_status"] = "mystery"
     rules = {f.rule for f in validate(frame).issues}
