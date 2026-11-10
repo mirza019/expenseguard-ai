@@ -1,0 +1,722 @@
+[
+  {
+    "document_id": "travel-policy-v1",
+    "title": "Employee Travel and Expense Policy",
+    "version": "1",
+    "effective_from": "2025-01-01",
+    "effective_to": "2025-12-31",
+    "department": "ALL",
+    "country": "DE",
+    "category": "Travel",
+    "status": "superseded",
+    "provenance": "synthetic ReportLab source; fictional company Sagebridge Demo Ltd",
+    "rules": [
+      {
+        "section_id": "2.1",
+        "page": 2,
+        "category": "Travel",
+        "country": "DE",
+        "department": "ALL",
+        "limit_eur": 40,
+        "unit": "per day",
+        "approval": "manager",
+        "receipt_required": true,
+        "statement": "Travel expenses in Germany are limited to EUR 40.00 per day."
+      },
+      {
+        "section_id": "2.2",
+        "page": 2,
+        "category": "Travel",
+        "country": "FR",
+        "department": "Engineering",
+        "limit_eur": 65,
+        "unit": "per transaction",
+        "approval": "director",
+        "receipt_required": true,
+        "statement": "Engineering travel expenses in France have a EUR 65.00 per transaction limit and require director approval."
+      }
+    ],
+    "exception": {
+      "section_id": "3.1",
+      "page": 3,
+      "country": "DE",
+      "department": "Engineering",
+      "limit_eur": 80,
+      "approval": "director",
+      "statement": "Engineering emergency travel expenses in Germany may use a EUR 80.00 limit only with documented director approval. Without proof of the emergency and approval, escalate for human review."
+    },
+    "cross_reference": "Financial Delegation of Authority, section 2.1; Expense Reimbursement and Supporting Documents, section 3.1"
+  },
+  {
+    "document_id": "travel-policy-v2",
+    "title": "Employee Travel and Expense Policy",
+    "version": "2",
+    "effective_from": "2026-01-01",
+    "effective_to": null,
+    "department": "ALL",
+    "country": "DE",
+    "category": "Travel",
+    "status": "active",
+    "provenance": "synthetic ReportLab source; fictional company Sagebridge Demo Ltd",
+    "rules": [
+      {
+        "section_id": "2.1",
+        "page": 2,
+        "category": "Travel",
+        "country": "DE",
+        "department": "ALL",
+        "limit_eur": 60,
+        "unit": "per day",
+        "approval": "manager",
+        "receipt_required": true,
+        "statement": "Travel expenses in Germany are limited to EUR 60.00 per day."
+      },
+      {
+        "section_id": "2.2",
+        "page": 2,
+        "category": "Travel",
+        "country": "FR",
+        "department": "Engineering",
+        "limit_eur": 85,
+        "unit": "per transaction",
+        "approval": "director",
+        "receipt_required": true,
+        "statement": "Engineering travel expenses in France have a EUR 85.00 per transaction limit and require director approval."
+      }
+    ],
+    "exception": {
+      "section_id": "3.1",
+      "page": 3,
+      "country": "DE",
+      "department": "Engineering",
+      "limit_eur": 120,
+      "approval": "director",
+      "statement": "Engineering emergency travel expenses in Germany may use a EUR 120.00 limit only with documented director approval. Without proof of the emergency and approval, escalate for human review."
+    },
+    "cross_reference": "Financial Delegation of Authority, section 2.1; Expense Reimbursement and Supporting Documents, section 3.1"
+  },
+  {
+    "document_id": "meals-policy-v1",
+    "title": "Meal and Entertainment Expenses",
+    "version": "1",
+    "effective_from": "2025-01-01",
+    "effective_to": "2025-12-31",
+    "department": "ALL",
+    "country": "DE",
+    "category": "Meals",
+    "status": "superseded",
+    "provenance": "synthetic ReportLab source; fictional company Sagebridge Demo Ltd",
+    "rules": [
+      {
+        "section_id": "2.1",
+        "page": 2,
+        "category": "Meals",
+        "country": "DE",
+        "department": "ALL",
+        "limit_eur": 40,
+        "unit": "per day",
+        "approval": "manager",
+        "receipt_required": true,
+        "statement": "Meals expenses in Germany are limited to EUR 40.00 per day."
+      },
+      {
+        "section_id": "2.2",
+        "page": 2,
+        "category": "Meals",
+        "country": "FR",
+        "department": "Engineering",
+        "limit_eur": 65,
+        "unit": "per transaction",
+        "approval": "director",
+        "receipt_required": true,
+        "statement": "Engineering meals expenses in France have a EUR 65.00 per transaction limit and require director approval."
+      }
+    ],
+    "exception": {
+      "section_id": "3.1",
+      "page": 3,
+      "country": "DE",
+      "department": "Engineering",
+      "limit_eur": 80,
+      "approval": "director",
+      "statement": "Engineering emergency meals expenses in Germany may use a EUR 80.00 limit only with documented director approval. Without proof of the emergency and approval, escalate for human review."
+    },
+    "cross_reference": "Financial Delegation of Authority, section 2.1; Expense Reimbursement and Supporting Documents, section 3.1"
+  },
+  {
+    "document_id": "meals-policy-v2",
+    "title": "Meal and Entertainment Expenses",
+    "version": "2",
+    "effective_from": "2026-01-01",
+    "effective_to": null,
+    "department": "ALL",
+    "country": "DE",
+    "category": "Meals",
+    "status": "active",
+    "provenance": "synthetic ReportLab source; fictional company Sagebridge Demo Ltd",
+    "rules": [
+      {
+        "section_id": "2.1",
+        "page": 2,
+        "category": "Meals",
+        "country": "DE",
+        "department": "ALL",
+        "limit_eur": 60,
+        "unit": "per day",
+        "approval": "manager",
+        "receipt_required": true,
+        "statement": "Meals expenses in Germany are limited to EUR 60.00 per day."
+      },
+      {
+        "section_id": "2.2",
+        "page": 2,
+        "category": "Meals",
+        "country": "FR",
+        "department": "Engineering",
+        "limit_eur": 85,
+        "unit": "per transaction",
+        "approval": "director",
+        "receipt_required": true,
+        "statement": "Engineering meals expenses in France have a EUR 85.00 per transaction limit and require director approval."
+      }
+    ],
+    "exception": {
+      "section_id": "3.1",
+      "page": 3,
+      "country": "DE",
+      "department": "Engineering",
+      "limit_eur": 120,
+      "approval": "director",
+      "statement": "Engineering emergency meals expenses in Germany may use a EUR 120.00 limit only with documented director approval. Without proof of the emergency and approval, escalate for human review."
+    },
+    "cross_reference": "Financial Delegation of Authority, section 2.1; Expense Reimbursement and Supporting Documents, section 3.1"
+  },
+  {
+    "document_id": "hotel-policy-v1",
+    "title": "Hotel and Accommodation Policy",
+    "version": "1",
+    "effective_from": "2025-01-01",
+    "effective_to": null,
+    "department": "ALL",
+    "country": "DE",
+    "category": "Hotel",
+    "status": "active",
+    "provenance": "synthetic ReportLab source; fictional company Sagebridge Demo Ltd",
+    "rules": [
+      {
+        "section_id": "2.1",
+        "page": 2,
+        "category": "Hotel",
+        "country": "DE",
+        "department": "ALL",
+        "limit_eur": 180,
+        "unit": "per transaction",
+        "approval": "manager",
+        "receipt_required": true,
+        "statement": "Hotel expenses in Germany are limited to EUR 180.00 per transaction."
+      },
+      {
+        "section_id": "2.2",
+        "page": 2,
+        "category": "Hotel",
+        "country": "FR",
+        "department": "Engineering",
+        "limit_eur": 205,
+        "unit": "per transaction",
+        "approval": "director",
+        "receipt_required": true,
+        "statement": "Engineering hotel expenses in France have a EUR 205.00 per transaction limit and require director approval."
+      }
+    ],
+    "exception": {
+      "section_id": "3.1",
+      "page": 3,
+      "country": "DE",
+      "department": "Engineering",
+      "limit_eur": 360,
+      "approval": "director",
+      "statement": "Engineering emergency hotel expenses in Germany may use a EUR 360.00 limit only with documented director approval. Without proof of the emergency and approval, escalate for human review."
+    },
+    "cross_reference": "Financial Delegation of Authority, section 2.1; Expense Reimbursement and Supporting Documents, section 3.1"
+  },
+  {
+    "document_id": "transport-policy-v1",
+    "title": "Transportation and Mileage Reimbursement",
+    "version": "1",
+    "effective_from": "2025-01-01",
+    "effective_to": null,
+    "department": "ALL",
+    "country": "DE",
+    "category": "Transport",
+    "status": "active",
+    "provenance": "synthetic ReportLab source; fictional company Sagebridge Demo Ltd",
+    "rules": [
+      {
+        "section_id": "2.1",
+        "page": 2,
+        "category": "Transport",
+        "country": "DE",
+        "department": "ALL",
+        "limit_eur": 80,
+        "unit": "per transaction",
+        "approval": "manager",
+        "receipt_required": true,
+        "statement": "Transport expenses in Germany are limited to EUR 80.00 per transaction."
+      },
+      {
+        "section_id": "2.2",
+        "page": 2,
+        "category": "Transport",
+        "country": "FR",
+        "department": "Engineering",
+        "limit_eur": 105,
+        "unit": "per transaction",
+        "approval": "director",
+        "receipt_required": true,
+        "statement": "Engineering transport expenses in France have a EUR 105.00 per transaction limit and require director approval."
+      }
+    ],
+    "exception": {
+      "section_id": "3.1",
+      "page": 3,
+      "country": "DE",
+      "department": "Engineering",
+      "limit_eur": 160,
+      "approval": "director",
+      "statement": "Engineering emergency transport expenses in Germany may use a EUR 160.00 limit only with documented director approval. Without proof of the emergency and approval, escalate for human review."
+    },
+    "cross_reference": "Financial Delegation of Authority, section 2.1; Expense Reimbursement and Supporting Documents, section 3.1"
+  },
+  {
+    "document_id": "procurement-policy-v1",
+    "title": "Procurement and Purchase Approval",
+    "version": "1",
+    "effective_from": "2025-01-01",
+    "effective_to": null,
+    "department": "ALL",
+    "country": "DE",
+    "category": "Procurement",
+    "status": "active",
+    "provenance": "synthetic ReportLab source; fictional company Sagebridge Demo Ltd",
+    "rules": [
+      {
+        "section_id": "2.1",
+        "page": 2,
+        "category": "Procurement",
+        "country": "DE",
+        "department": "ALL",
+        "limit_eur": 500,
+        "unit": "per transaction",
+        "approval": "manager",
+        "receipt_required": true,
+        "statement": "Procurement expenses in Germany are limited to EUR 500.00 per transaction."
+      },
+      {
+        "section_id": "2.2",
+        "page": 2,
+        "category": "Procurement",
+        "country": "FR",
+        "department": "Engineering",
+        "limit_eur": 525,
+        "unit": "per transaction",
+        "approval": "director",
+        "receipt_required": true,
+        "statement": "Engineering procurement expenses in France have a EUR 525.00 per transaction limit and require director approval."
+      }
+    ],
+    "exception": {
+      "section_id": "3.1",
+      "page": 3,
+      "country": "DE",
+      "department": "Engineering",
+      "limit_eur": 1000,
+      "approval": "director",
+      "statement": "Engineering emergency procurement expenses in Germany may use a EUR 1000.00 limit only with documented director approval. Without proof of the emergency and approval, escalate for human review."
+    },
+    "cross_reference": "Financial Delegation of Authority, section 2.1; Expense Reimbursement and Supporting Documents, section 3.1"
+  },
+  {
+    "document_id": "cards-policy-v1",
+    "title": "Corporate Credit Card Usage",
+    "version": "1",
+    "effective_from": "2025-01-01",
+    "effective_to": null,
+    "department": "ALL",
+    "country": "DE",
+    "category": "Corporate Card",
+    "status": "active",
+    "provenance": "synthetic ReportLab source; fictional company Sagebridge Demo Ltd",
+    "rules": [
+      {
+        "section_id": "2.1",
+        "page": 2,
+        "category": "Corporate Card",
+        "country": "DE",
+        "department": "ALL",
+        "limit_eur": 1000,
+        "unit": "per transaction",
+        "approval": "manager",
+        "receipt_required": true,
+        "statement": "Corporate Card expenses in Germany are limited to EUR 1000.00 per transaction."
+      },
+      {
+        "section_id": "2.2",
+        "page": 2,
+        "category": "Corporate Card",
+        "country": "FR",
+        "department": "Engineering",
+        "limit_eur": 1025,
+        "unit": "per transaction",
+        "approval": "director",
+        "receipt_required": true,
+        "statement": "Engineering corporate card expenses in France have a EUR 1025.00 per transaction limit and require director approval."
+      }
+    ],
+    "exception": {
+      "section_id": "3.1",
+      "page": 3,
+      "country": "DE",
+      "department": "Engineering",
+      "limit_eur": 2000,
+      "approval": "director",
+      "statement": "Engineering emergency corporate card expenses in Germany may use a EUR 2000.00 limit only with documented director approval. Without proof of the emergency and approval, escalate for human review."
+    },
+    "cross_reference": "Financial Delegation of Authority, section 2.1; Expense Reimbursement and Supporting Documents, section 3.1"
+  },
+  {
+    "document_id": "invoices-policy-v1",
+    "title": "Invoice Processing and Duplicate Prevention",
+    "version": "1",
+    "effective_from": "2025-01-01",
+    "effective_to": null,
+    "department": "ALL",
+    "country": "DE",
+    "category": "Invoice",
+    "status": "active",
+    "provenance": "synthetic ReportLab source; fictional company Sagebridge Demo Ltd",
+    "rules": [
+      {
+        "section_id": "2.1",
+        "page": 2,
+        "category": "Invoice",
+        "country": "DE",
+        "department": "ALL",
+        "limit_eur": 10000,
+        "unit": "per transaction",
+        "approval": "manager",
+        "receipt_required": true,
+        "statement": "Invoice expenses in Germany are limited to EUR 10000.00 per transaction."
+      },
+      {
+        "section_id": "2.2",
+        "page": 2,
+        "category": "Invoice",
+        "country": "FR",
+        "department": "Engineering",
+        "limit_eur": 10025,
+        "unit": "per transaction",
+        "approval": "director",
+        "receipt_required": true,
+        "statement": "Engineering invoice expenses in France have a EUR 10025.00 per transaction limit and require director approval."
+      }
+    ],
+    "exception": {
+      "section_id": "3.1",
+      "page": 3,
+      "country": "DE",
+      "department": "Engineering",
+      "limit_eur": 20000,
+      "approval": "director",
+      "statement": "Engineering emergency invoice expenses in Germany may use a EUR 20000.00 limit only with documented director approval. Without proof of the emergency and approval, escalate for human review."
+    },
+    "cross_reference": "Financial Delegation of Authority, section 2.1; Expense Reimbursement and Supporting Documents, section 3.1"
+  },
+  {
+    "document_id": "budgets-policy-v1",
+    "title": "Departmental Budget Control",
+    "version": "1",
+    "effective_from": "2025-01-01",
+    "effective_to": null,
+    "department": "ALL",
+    "country": "DE",
+    "category": "Budget",
+    "status": "active",
+    "provenance": "synthetic ReportLab source; fictional company Sagebridge Demo Ltd",
+    "rules": [
+      {
+        "section_id": "2.1",
+        "page": 2,
+        "category": "Budget",
+        "country": "DE",
+        "department": "ALL",
+        "limit_eur": 5000,
+        "unit": "per transaction",
+        "approval": "manager",
+        "receipt_required": true,
+        "statement": "Budget expenses in Germany are limited to EUR 5000.00 per transaction."
+      },
+      {
+        "section_id": "2.2",
+        "page": 2,
+        "category": "Budget",
+        "country": "FR",
+        "department": "Engineering",
+        "limit_eur": 5025,
+        "unit": "per transaction",
+        "approval": "director",
+        "receipt_required": true,
+        "statement": "Engineering budget expenses in France have a EUR 5025.00 per transaction limit and require director approval."
+      }
+    ],
+    "exception": {
+      "section_id": "3.1",
+      "page": 3,
+      "country": "DE",
+      "department": "Engineering",
+      "limit_eur": 10000,
+      "approval": "director",
+      "statement": "Engineering emergency budget expenses in Germany may use a EUR 10000.00 limit only with documented director approval. Without proof of the emergency and approval, escalate for human review."
+    },
+    "cross_reference": "Financial Delegation of Authority, section 2.1; Expense Reimbursement and Supporting Documents, section 3.1"
+  },
+  {
+    "document_id": "vendors-policy-v1",
+    "title": "Vendor Payments and Payment Terms",
+    "version": "1",
+    "effective_from": "2025-01-01",
+    "effective_to": null,
+    "department": "ALL",
+    "country": "DE",
+    "category": "Vendor Payment",
+    "status": "active",
+    "provenance": "synthetic ReportLab source; fictional company Sagebridge Demo Ltd",
+    "rules": [
+      {
+        "section_id": "2.1",
+        "page": 2,
+        "category": "Vendor Payment",
+        "country": "DE",
+        "department": "ALL",
+        "limit_eur": 3000,
+        "unit": "per transaction",
+        "approval": "manager",
+        "receipt_required": true,
+        "statement": "Vendor Payment expenses in Germany are limited to EUR 3000.00 per transaction."
+      },
+      {
+        "section_id": "2.2",
+        "page": 2,
+        "category": "Vendor Payment",
+        "country": "FR",
+        "department": "Engineering",
+        "limit_eur": 3025,
+        "unit": "per transaction",
+        "approval": "director",
+        "receipt_required": true,
+        "statement": "Engineering vendor payment expenses in France have a EUR 3025.00 per transaction limit and require director approval."
+      }
+    ],
+    "exception": {
+      "section_id": "3.1",
+      "page": 3,
+      "country": "DE",
+      "department": "Engineering",
+      "limit_eur": 6000,
+      "approval": "director",
+      "statement": "Engineering emergency vendor payment expenses in Germany may use a EUR 6000.00 limit only with documented director approval. Without proof of the emergency and approval, escalate for human review."
+    },
+    "cross_reference": "Financial Delegation of Authority, section 2.1; Expense Reimbursement and Supporting Documents, section 3.1"
+  },
+  {
+    "document_id": "reimbursement-policy-v1",
+    "title": "Expense Reimbursement and Supporting Documents",
+    "version": "1",
+    "effective_from": "2025-01-01",
+    "effective_to": null,
+    "department": "ALL",
+    "country": "DE",
+    "category": "Reimbursement",
+    "status": "active",
+    "provenance": "synthetic ReportLab source; fictional company Sagebridge Demo Ltd",
+    "rules": [
+      {
+        "section_id": "2.1",
+        "page": 2,
+        "category": "Reimbursement",
+        "country": "DE",
+        "department": "ALL",
+        "limit_eur": 150,
+        "unit": "per transaction",
+        "approval": "manager",
+        "receipt_required": true,
+        "statement": "Reimbursement expenses in Germany are limited to EUR 150.00 per transaction."
+      },
+      {
+        "section_id": "2.2",
+        "page": 2,
+        "category": "Reimbursement",
+        "country": "FR",
+        "department": "Engineering",
+        "limit_eur": 175,
+        "unit": "per transaction",
+        "approval": "director",
+        "receipt_required": true,
+        "statement": "Engineering reimbursement expenses in France have a EUR 175.00 per transaction limit and require director approval."
+      }
+    ],
+    "exception": {
+      "section_id": "3.1",
+      "page": 3,
+      "country": "DE",
+      "department": "Engineering",
+      "limit_eur": 300,
+      "approval": "director",
+      "statement": "Engineering emergency reimbursement expenses in Germany may use a EUR 300.00 limit only with documented director approval. Without proof of the emergency and approval, escalate for human review."
+    },
+    "cross_reference": "Financial Delegation of Authority, section 2.1; Expense Reimbursement and Supporting Documents, section 3.1"
+  },
+  {
+    "document_id": "authority-policy-v1",
+    "title": "Financial Delegation of Authority",
+    "version": "1",
+    "effective_from": "2025-01-01",
+    "effective_to": null,
+    "department": "ALL",
+    "country": "DE",
+    "category": "Procurement",
+    "status": "active",
+    "provenance": "synthetic ReportLab source; fictional company Sagebridge Demo Ltd",
+    "rules": [
+      {
+        "section_id": "2.1",
+        "page": 2,
+        "category": "Procurement",
+        "country": "DE",
+        "department": "ALL",
+        "limit_eur": 1000,
+        "unit": "per transaction",
+        "approval": "manager",
+        "receipt_required": true,
+        "statement": "Procurement expenses in Germany are limited to EUR 1000.00 per transaction."
+      },
+      {
+        "section_id": "2.2",
+        "page": 2,
+        "category": "Procurement",
+        "country": "FR",
+        "department": "Engineering",
+        "limit_eur": 1025,
+        "unit": "per transaction",
+        "approval": "director",
+        "receipt_required": true,
+        "statement": "Engineering procurement expenses in France have a EUR 1025.00 per transaction limit and require director approval."
+      }
+    ],
+    "exception": {
+      "section_id": "3.1",
+      "page": 3,
+      "country": "DE",
+      "department": "Engineering",
+      "limit_eur": 2000,
+      "approval": "director",
+      "statement": "Engineering emergency procurement expenses in Germany may use a EUR 2000.00 limit only with documented director approval. Without proof of the emergency and approval, escalate for human review."
+    },
+    "cross_reference": "Financial Delegation of Authority, section 2.1; Expense Reimbursement and Supporting Documents, section 3.1"
+  },
+  {
+    "document_id": "audit-policy-v1",
+    "title": "Internal Audit and Expense Compliance",
+    "version": "1",
+    "effective_from": "2025-01-01",
+    "effective_to": null,
+    "department": "ALL",
+    "country": "DE",
+    "category": "Audit",
+    "status": "active",
+    "provenance": "synthetic ReportLab source; fictional company Sagebridge Demo Ltd",
+    "rules": [
+      {
+        "section_id": "2.1",
+        "page": 2,
+        "category": "Audit",
+        "country": "DE",
+        "department": "ALL",
+        "limit_eur": 2500,
+        "unit": "per transaction",
+        "approval": "manager",
+        "receipt_required": true,
+        "statement": "Audit expenses in Germany are limited to EUR 2500.00 per transaction."
+      },
+      {
+        "section_id": "2.2",
+        "page": 2,
+        "category": "Audit",
+        "country": "FR",
+        "department": "Engineering",
+        "limit_eur": 2525,
+        "unit": "per transaction",
+        "approval": "director",
+        "receipt_required": true,
+        "statement": "Engineering audit expenses in France have a EUR 2525.00 per transaction limit and require director approval."
+      }
+    ],
+    "exception": {
+      "section_id": "3.1",
+      "page": 3,
+      "country": "DE",
+      "department": "Engineering",
+      "limit_eur": 5000,
+      "approval": "director",
+      "statement": "Engineering emergency audit expenses in Germany may use a EUR 5000.00 limit only with documented director approval. Without proof of the emergency and approval, escalate for human review."
+    },
+    "cross_reference": "Financial Delegation of Authority, section 2.1; Expense Reimbursement and Supporting Documents, section 3.1"
+  },
+  {
+    "document_id": "travel-guidance-unknown",
+    "title": "Employee Travel Expense Guidance",
+    "version": "UNKNOWN",
+    "effective_from": null,
+    "effective_to": null,
+    "department": "UNKNOWN",
+    "country": "UNKNOWN",
+    "category": "Travel",
+    "status": "unknown",
+    "provenance": "synthetic ReportLab source; fictional company Sagebridge Demo Ltd",
+    "rules": [
+      {
+        "section_id": "2.1",
+        "page": 2,
+        "category": "Travel",
+        "country": "DE",
+        "department": "ALL",
+        "limit_eur": 40,
+        "unit": "per day",
+        "approval": "manager",
+        "receipt_required": true,
+        "statement": "Travel expenses in Germany are limited to EUR 40.00 per day."
+      },
+      {
+        "section_id": "2.2",
+        "page": 2,
+        "category": "Travel",
+        "country": "FR",
+        "department": "Engineering",
+        "limit_eur": 65,
+        "unit": "per transaction",
+        "approval": "director",
+        "receipt_required": true,
+        "statement": "Engineering travel expenses in France have a EUR 65.00 per transaction limit and require director approval."
+      }
+    ],
+    "exception": {
+      "section_id": "3.1",
+      "page": 3,
+      "country": "DE",
+      "department": "Engineering",
+      "limit_eur": 80,
+      "approval": "director",
+      "statement": "Engineering emergency travel expenses in Germany may use a EUR 80.00 limit only with documented director approval. Without proof of the emergency and approval, escalate for human review."
+    },
+    "cross_reference": "Financial Delegation of Authority, section 2.1; Expense Reimbursement and Supporting Documents, section 3.1"
+  }
+]

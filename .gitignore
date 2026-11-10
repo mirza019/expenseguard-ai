@@ -9,3 +9,13 @@ venv/
 .coverage
 htmlcov/
 .DS_Store
+coverage.xml
+.ruff_cache/
+*.log
+.local/
+*.duckdb
+*.duckdb.wal
+*.sqlite3
+*.gguf
+site/demo-report.json
+data/evaluation/results/

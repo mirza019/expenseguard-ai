@@ -1,0 +1,161 @@
+[
+  {
+    "transaction_ids": [
+      "RAG-TX-00000",
+      "RAG-TX-00001"
+    ],
+    "planted_issue": "duplicate_invoice",
+    "expected_policy_references": [
+      {
+        "document_id": "invoices-policy-v1",
+        "section_id": "2.3",
+        "page": 2
+      }
+    ],
+    "expected_behavior": "needs_review"
+  },
+  {
+    "transaction_ids": [
+      "RAG-TX-00002"
+    ],
+    "planted_issue": "unusual_amount",
+    "expected_policy_references": [
+      {
+        "document_id": "transport-policy-v1",
+        "section_id": "2.1",
+        "page": 2
+      }
+    ],
+    "expected_behavior": "needs_review"
+  },
+  {
+    "transaction_ids": [
+      "RAG-TX-00003"
+    ],
+    "planted_issue": "missing_receipt",
+    "expected_policy_references": [
+      {
+        "document_id": "procurement-policy-v1",
+        "section_id": "2.1",
+        "page": 2
+      },
+      {
+        "document_id": "authority-policy-v1",
+        "section_id": "2.1",
+        "page": 2
+      }
+    ],
+    "expected_behavior": "needs_review"
+  },
+  {
+    "transaction_ids": [
+      "RAG-TX-00004"
+    ],
+    "planted_issue": "policy_threshold",
+    "expected_policy_references": [
+      {
+        "document_id": "meals-policy-v1",
+        "section_id": "2.1",
+        "page": 2
+      }
+    ],
+    "expected_behavior": "needs_review"
+  },
+  {
+    "transaction_ids": [
+      "RAG-TX-00005"
+    ],
+    "planted_issue": "missing_approval",
+    "expected_policy_references": [
+      {
+        "document_id": "travel-policy-v1",
+        "section_id": "2.1",
+        "page": 2
+      }
+    ],
+    "expected_behavior": "needs_review"
+  },
+  {
+    "transaction_ids": [
+      "RAG-TX-00006"
+    ],
+    "planted_issue": "incorrect_authority",
+    "expected_policy_references": [
+      {
+        "document_id": "meals-policy-v2",
+        "section_id": "2.2",
+        "page": 2
+      }
+    ],
+    "expected_behavior": "needs_review"
+  },
+  {
+    "transaction_ids": [
+      "RAG-TX-00007"
+    ],
+    "planted_issue": "historical_violation",
+    "expected_policy_references": [
+      {
+        "document_id": "meals-policy-v1",
+        "section_id": "2.1",
+        "page": 2
+      }
+    ],
+    "expected_behavior": "needs_review"
+  },
+  {
+    "transaction_ids": [
+      "RAG-TX-00008"
+    ],
+    "planted_issue": "department_exception",
+    "expected_policy_references": [
+      {
+        "document_id": "meals-policy-v1",
+        "section_id": "2.1",
+        "page": 2
+      },
+      {
+        "document_id": "meals-policy-v1",
+        "section_id": "3.1",
+        "page": 3
+      }
+    ],
+    "expected_behavior": "within_documented_exception"
+  },
+  {
+    "transaction_ids": [
+      "RAG-TX-00009"
+    ],
+    "planted_issue": "legitimate_high_value",
+    "expected_policy_references": [
+      {
+        "document_id": "vendors-policy-v1",
+        "section_id": "2.1",
+        "page": 2
+      }
+    ],
+    "expected_behavior": "within_standard_limit"
+  },
+  {
+    "transaction_ids": [
+      "RAG-TX-00010"
+    ],
+    "planted_issue": "insufficient_evidence",
+    "expected_policy_references": [],
+    "expected_behavior": "insufficient_evidence"
+  },
+  {
+    "transaction_ids": [
+      "RAG-TX-00011"
+    ],
+    "planted_issue": "budget_overrun",
+    "expected_policy_references": [
+      {
+        "document_id": "budgets-policy-v1",
+        "section_id": "2.3",
+        "page": 2
+      }
+    ],
+    "expected_behavior": "needs_review"
+  }
+]
