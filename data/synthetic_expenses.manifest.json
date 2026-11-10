@@ -1,0 +1,16 @@
+{
+  "seed": 42,
+  "rows": 1200,
+  "exact_duplicate_ids": [
+    "TX00000",
+    "TX00001"
+  ],
+  "possible_duplicate_id": "TX00002",
+  "large_expense_id": "TX00003",
+  "missing_vendor_id": "TX00004",
+  "invalid_date_id": "TX00005",
+  "invalid_amount_id": "TX00006",
+  "unsupported_currency_id": "TX00007",
+  "duplicate_transaction_id": "TX00009",
+  "budget_overrun": "TX00003 exceeds its monthly cost-center allocation on its own"
+}
