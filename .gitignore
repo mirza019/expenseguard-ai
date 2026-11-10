@@ -9,3 +9,6 @@ venv/
 .coverage
 htmlcov/
 .DS_Store
+coverage.xml
+.ruff_cache/
+*.log
