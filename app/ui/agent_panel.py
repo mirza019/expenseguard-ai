@@ -23,7 +23,11 @@ def audit_panel(data: ValidatedData) -> None:
         st.json(st.session_state["individual"], expanded=False)
     if st.button("Run complete deterministic audit", type="primary"):
         with st.spinner("Executing four verified checks…"):
-            st.session_state["audit"] = run_audit(data)
+            st.session_state["audit"] = run_audit(
+                data,
+                policy_index=st.session_state.get("policy_index"),
+                policy_root=st.session_state.get("policy_root"),
+            )
         st.rerun()
 
 
@@ -48,6 +52,8 @@ def agent_panel(data: ValidatedData, model_status: ModelStatus | None = None) ->
                     mode="agent",
                     config=settings(),
                     policies=tuple(st.session_state.get("policy_documents", ())),
+                    policy_index=st.session_state.get("policy_index"),
+                    policy_root=st.session_state.get("policy_root"),
                 )
             st.rerun()
         except ValueError as exc:
@@ -75,6 +81,7 @@ def report_panel(data: ValidatedData | None = None) -> None:
     if not audit:
         st.info("Run an audit to generate a report.")
         return
+    data = audit.get("data", data)
     report = audit["report"]
     st.subheader("Evidence-based audit report")
     st.write("Mode:", report["mode"])

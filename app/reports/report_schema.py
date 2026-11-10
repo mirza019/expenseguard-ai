@@ -85,6 +85,7 @@ class AuditPDFReport(ReportModel):
     cost_centers: list[FinancialRow]
     findings: list[ReportFinding]
     policy_sources: list[PolicySource]
+    indexed_policies: list[dict] = Field(default_factory=list)
     policies: list[PolicyCitation]
     investigation: list[InvestigationNote]
     methodology: list[str]
@@ -112,7 +113,14 @@ class AuditPDFReport(ReportModel):
         if len({f.finding_id for f in self.findings}) != len(self.findings):
             raise ValueError("Duplicate finding IDs.")
         if self.potential_policy_rows != (
-            len({c.source_row for c in self.policies if c.assessment == "potential_violation"})
+            len(
+                {c.source_row for c in self.policies if c.assessment == "potential_violation"}
+                | {
+                    f["source_row"]
+                    for f in self.indexed_policies
+                    if f["status"] == "potential_violation"
+                }
+            )
             if self.policy_evaluations is not None
             else None
         ):

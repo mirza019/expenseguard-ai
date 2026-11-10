@@ -133,3 +133,18 @@ python scripts/generate_sample_report.py
 
 See [the synthetic report](examples/ExpenseGuard_Synthetic_Audit_Report.pdf) and its
 [fictional policy](examples/fictional_expense_policy.pdf). Neither contains real financial records.
+
+
+## Indexed policy evidence
+
+The Policy Knowledge Base is integrated with the report service. `prepare_report` recomputes supported
+indexed controls against the scoped financial frame, verifies source hashes and citations, and compares
+those results with the audit object. Only verified references enter `indexed_policies` in the typed PDF
+schema. The PDF prints transaction, policy/version, section, page range, threshold/condition, evidence
+status and investigation action. Incomplete and conflicting evidence remain distinct from potential
+violations. Ground-truth labels never enter reports. Policy-source changes fail validation instead of
+silently producing a stale document.
+
+The reproducible [October 2025 indexed-policy report](examples/ExpenseGuard_October_2025_RAG_Audit.pdf)
+comes from `python scripts/generate_october_demo.py`, which reads transactions and indexed policy PDFs,
+not evaluation labels. The associated verified figures are in `release/OCTOBER_2025_DEMO.json`.

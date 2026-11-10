@@ -1,5 +1,6 @@
 """Explicit normalization, exclusions and row-level quality evidence."""
 
+import re
 from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
 
@@ -66,13 +67,26 @@ def cents(value: object) -> int | None:
 
 def validate(frame: pd.DataFrame) -> ValidatedData:
     """Preserve source; normalize separately and record every validation failure."""
-    missing = sorted(set(REQUIRED) - set(frame.columns))
+    normalized = [
+        re.sub(r"[^a-z0-9]+", "_", str(c).strip().lower()).strip("_") for c in frame.columns
+    ]
+    if len(set(normalized)) != len(normalized):
+        raise ValueError("Ambiguous duplicate column names after normalization.")
+    analytical = frame.copy(deep=True)
+    analytical.columns = normalized
+    for alias, canonical in {
+        "transaction_date": "invoice_date",
+        "expense_category": "category",
+    }.items():
+        if canonical not in analytical.columns and alias in analytical.columns:
+            analytical[canonical] = analytical[alias]
+    missing = sorted(set(REQUIRED) - set(analytical.columns))
     if missing:
         raise ValueError("Missing required columns: " + ", ".join(missing))
     if frame.empty:
         raise ValueError("No transactions to validate.")
-    clean = frame[REQUIRED].copy(deep=True).reset_index(drop=True)
-    for column in REQUIRED:
+    clean = analytical.copy(deep=True).reset_index(drop=True)
+    for column in clean.columns:
         clean[column] = clean[column].fillna("").astype(str).str.strip()
     clean["source_row"] = range(2, len(clean) + 2)
     clean["currency"] = clean["currency"].str.upper()
@@ -82,6 +96,11 @@ def validate(frame: pd.DataFrame) -> ValidatedData:
     date_text = clean["invoice_date"].str.replace(r"[ T]00:00:00$", "", regex=True)
     date_text = date_text.where(date_text.str.fullmatch(r"\d{4}-\d{2}-\d{2}"), "")
     clean["date"] = pd.to_datetime(date_text, format="%Y-%m-%d", errors="coerce")
+    clean["policy_date"] = (
+        pd.to_datetime(clean["transaction_date"], format="%Y-%m-%d", errors="coerce")
+        if "transaction_date" in clean
+        else clean["date"]
+    )
     clean["month"] = clean["date"].dt.strftime("%Y-%m")
     clean["eligible"] = True
     issues = []

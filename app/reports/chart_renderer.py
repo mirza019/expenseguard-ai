@@ -25,7 +25,7 @@ def render_chart(rows: list[FinancialRow], title: str, budget: bool = False) -> 
             x,
             [r.actual_cents / 100 for r in chosen],
             width=0.38 if budget else 0.65,
-            color="#711D3C",
+            color="#167D61",
             label="Actual",
         )
         if budget:
@@ -36,7 +36,7 @@ def render_chart(rows: list[FinancialRow], title: str, budget: bool = False) -> 
                 [index + 0.4 for index, _ in known],
                 [row.budget_cents / 100 for _, row in known],
                 width=0.38,
-                color="#B49AA5",
+                color="#AACBB7",
                 label="Known budget",
             )
             axes.legend(frameon=False, fontsize=8)

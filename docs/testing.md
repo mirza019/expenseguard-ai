@@ -35,15 +35,16 @@ package index but test execution itself requires no external service.
 
 ## Measured local result
 
-Linux, Python 3.12.14: **111 tests passed; 97.72% statement coverage of 1,010 core/reporting
-statements** after the PDF reporting extension. Three Node frontend tests passed. Ruff, formatting,
-shell syntax, pinned dependency/configuration checks and pip consistency checks passed. Coverage now
-includes report models, chart rendering, PDF composition and policy validation as well as the existing
-financial/agent modules. It is not a claim of complete branch coverage or production audit accuracy.
+Linux, Python 3.12: **131 tests passed; 96.28% statement coverage** of 1,857 selected core/reporting/
+RAG/evaluation statements (69 uncovered). The full command ran in 134.98 seconds. Coverage includes
+services, tools, agents, DuckDB, reports, RAG and evaluation; UI and generation are additionally tested
+outside that denominator. This measures regression coverage, not financial fraud detection accuracy.
 
-The actual `./start.sh` installed/reused the pinned reporting dependencies and launched Streamlit;
-the HTTP health endpoint returned `ok`. A4 PDF pages were rendered using PyMuPDF and inspected, with
-automated text bounds/overlap checks, readable extraction and long-table pagination tests.
+Real Chromium inspection captured all eight tabs at 1440×1000 and Overview at 390×844 after loading
+2,400 transactions, indexing policies and running the audit. No page errors or horizontal document
+overflow were observed. Screenshots are in `docs/screenshots`. Streamlit AppTest independently covers
+loading, model setup, audit, PDF download controls and session-cache behavior. PDF tests render actual
+A4 pages and inspect text bounds/pagination. See the release engineering report for final CI status.
 
 ## CI
 
@@ -55,10 +56,10 @@ and PRs targeting main trigger it. Main is never automatically merged or deploye
 
 - Real Ollama/Qwen3 inference, a multi-GB model pull, installed quantization and useful tool selection.
 - Apple Silicon installation and interactive latency/memory usage on the target Mac.
-- Real browser upload/download interactions beyond Streamlit’s simulated UI tests.
+- Additional real-browser upload formats and every platform-specific file picker.
 - Operational security and data policies before any production use.
 
-No screenshots are claimed because no real browser capture has been made. Windows PowerShell startup is supplied but was not executed here.
+Screenshots document actual Chromium rendering, not Mac/Safari behavior. Windows PowerShell startup is supplied but was not executed here.
 
 ## Setup and agent regression tests
 
@@ -95,3 +96,17 @@ python scripts/generate_sample_report.py
 
 The example is generated solely from fictional data and policy text. Its 11 pages (about 175 KB)
 were visually inspected for chart labels, table continuation, findings and policy references.
+
+
+## RAG and planning regressions
+
+`tests/unit/test_rag_pipeline.py` checks reproducible PDFs/CSV/XLSX/questions, section/page boundaries,
+parent context, exceptions, scope/version filters, duplicates/reindexing, corrupt metadata, index
+replacement safety, BM25 avoiding embeddings, citation validation, metric arithmetic and unavailable
+or mocked live models. Unknown emergency approval and unsupported approver roles require more evidence.
+`test_planning.py` independently verifies scenario cents, run-rate assumptions and category contributions.
+`tests/integration/test_policy_intelligence.py` covers October scope → four-tool LangGraph → historical
+policy controls → verified PDF, source failure and the integrated Streamlit demo.
+
+The manual-only `rag-benchmark.yml` runs a full no-model benchmark. Optional real MiniLM evaluation was
+run locally, separately from lightweight CI. No ordinary test downloads embeddings or Qwen weights.

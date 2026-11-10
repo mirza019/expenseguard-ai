@@ -1,0 +1,24 @@
+name: Optional model-free RAG benchmark
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - run: python scripts/generate_synthetic_policies.py
+      - run: python scripts/generate_synthetic_expenses.py
+      - run: python scripts/generate_rag_ground_truth.py
+      - run: python scripts/build_rag_index.py
+      - run: python scripts/evaluate_rag.py --split test
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rag-benchmark
+          path: data/evaluation/results

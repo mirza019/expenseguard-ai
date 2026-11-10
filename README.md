@@ -1,6 +1,6 @@
-# ExpenseGuard AI
+# ExpenseGuard AI — Agentic Financial Audit & Policy Intelligence Platform
 
-**An evidence-first expense auditing application with controlled LangGraph tool use and optional local AI.**
+A locally deployable financial analytics application combining deterministic expense auditing, LangGraph-based AI agents, metadata-aware policy RAG, hybrid retrieval, and evidence-grounded reporting. The platform supports financial variance investigation, policy compliance review, automated PDF reporting, and reproducible RAG evaluation using synthetic datasets.
 
 ExpenseGuard turns CSV/XLSX expense exports into explainable review flags, budget reconciliation,
 interactive charts and downloadable audit evidence. Deterministic financial checks work without
@@ -29,9 +29,14 @@ transaction identifiers, a rule, evidence, severity and a suggested investigatio
 - Optional local Ollama selection and structured investigation recommendations.
 - Explicit deterministic fallback when a model is unavailable or repeatedly invalid.
 - Professional A4 PDF reports with verified KPIs, charts, findings, preview and download.
-- Optional page-aware policy PDF retrieval with validated citations and explicit category-limit checks.
+- Hierarchical policy PDF chunks, version/date/scope filtering, BM25, FAISS and RRF hybrid retrieval.
+- Optional SentenceTransformers semantic embeddings; model-free hashing baseline clearly labeled.
+- Source-verified policy thresholds, receipts, approvals, daily totals, exceptions and conflict escalation.
+- Monthly/category variance contributions, a discretionary-cost scenario and conditional run-rate estimates.
 - Markdown, JSON evidence and spreadsheet-safe findings CSV downloads.
-- Seeded 1,200-row dataset with an injected-condition manifest.
+- Reproducible 15-policy/45-page corpus, 2,400 CSV/XLSX transactions and 196 labeled RAG questions.
+- Evaluation Lab with measured method comparisons, failed cases and source/expected evidence inspection.
+- Light emerald interface with eight workflow sections and downloadable flagged source transactions.
 - Tests and CI; no paid API or live Ollama needed for tests.
 
 Reports are PDF, Markdown, JSON and CSV; persistent case management is not implemented. Data and audit state last only for the current Streamlit session.
@@ -39,33 +44,28 @@ Reports are PDF, Markdown, JSON and CSV; persistent case management is not imple
 ## Architecture
 
 ```mermaid
-flowchart LR
-    A[CSV / XLSX] --> B[Bounded ingestion]
-    B --> C[Original data retained]
-    B --> D[Normalized data + quality issues]
-    D --> E[Registered analytical tools]
-    D --> F[In-memory DuckDB summaries]
-    G[User goal] --> H[LangGraph planner]
-    I[Optional loopback Ollama] <--> H
-    H --> E
-    E --> J[Deterministic evidence validation]
-    J --> H
-    J --> K[Structured audit report]
-    F --> L[Streamlit + Plotly dashboard]
-    K --> L
-    K --> Q[Reconciliation + typed report schema]
-    P[Policy PDFs] --> R[PyMuPDF + policy RAG]
-    R --> V[Verified policy evidence]
-    V --> Q
-    Q --> PDF[ReportLab PDF generator]
-    PDF --> M[Preview / PDF download]
-    K --> X[Markdown / JSON / CSV downloads]
+flowchart TD
+    CSV[Financial CSV/XLSX] --> PD[Pandas validation + DuckDB]
+    PD --> FT[Deterministic audit tools]
+    PDF[Policy PDFs] --> EX[PyMuPDF extraction]
+    EX --> CH[Parent-child chunks + metadata]
+    CH --> IX[Embeddings + FAISS / BM25]
+    LG[LangGraph + optional ChatOllama] --> FT
+    LG --> IX
+    FT --> EV[Evidence validation]
+    IX --> EV
+    EV --> UI[Streamlit / Plotly]
+    EV --> RP[Report schema + ReportLab PDF]
+    RP --> DL[Preview / download]
+    GT[Separate ground-truth evaluation] --> MET[Measured retrieval and answer proxies]
+    IX --> MET
+    MET --> LAB[Evaluation Lab]
 ```
 
 ### Technology
 
 Python 3.11+, Streamlit, pandas, DuckDB, Pydantic, LangGraph, LangChain ChatOllama, the Ollama Python SDK, Plotly, openpyxl,
-ReportLab, Matplotlib Agg, PyMuPDF, pytest/pytest-cov, Ruff and GitHub Actions. Exact dependency versions are in `requirements.txt`.
+ReportLab, Matplotlib Agg, PyMuPDF, FAISS, BM25, optional SentenceTransformers, pytest/pytest-cov, Ruff and GitHub Actions. Exact dependency versions are in `requirements.txt`.
 The application uses no microservices or container orchestration. Node 22 is needed only for static frontend tests, not local app startup.
 
 ## Quick Start — one command after cloning
@@ -198,7 +198,8 @@ amount,currency,budget_amount,description,payment_status
 - Missing invoice IDs, descriptions, statuses or budgets remain review findings without automatically
   removing valid expense amounts. Conflicting budgets prevent a complete variance result.
 - Duplicate transaction IDs remain flagged and retained. Row numbers disambiguate repeated IDs.
-- Additional columns are preserved in the original preview but not used by analytics.
+- Additional columns are retained in the normalized copy. Policy checks use country, employee, receipt, approval and exception fields when present; unavailable evidence remains explicit.
+- Column names are normalized with collision checks. `transaction_date` and `expense_category` can map to missing canonical fields. An explicit incurred `transaction_date` drives policy applicability; `invoice_date` drives accounting periods.
 
 ### Budget definition
 
@@ -237,9 +238,66 @@ a budget overrun. Seeded random data also creates incidental outliers and review
 Data generation is not a claim of real-world detection performance. `sample_expenses.csv` is the
 legacy scaffold fixture and does not satisfy the new full upload schema; use `synthetic_expenses.csv`.
 
+
+## Policy intelligence and reproducible evaluation
+
+Run these commands with the project environment (`.venv/bin/python`, or activate `.venv` first):
+
+```bash
+python scripts/generate_synthetic_policies.py
+python scripts/generate_synthetic_expenses.py
+python scripts/generate_rag_ground_truth.py
+python scripts/build_rag_index.py
+python scripts/evaluate_rag.py --split development --output data/evaluation/results/development.json
+python scripts/evaluate_rag.py --split test --output data/evaluation/results/heldout.json
+python scripts/generate_october_demo.py
+```
+
+The default index uses a **nonsemantic hashing baseline**, requiring no model download. Optional
+`sentence-transformers/all-MiniLM-L6-v2` provides real semantic embeddings; installation, explicit
+first download and separate index commands are in [RAG evaluation](docs/RAG_EVALUATION.md).
+Qwen generation evaluation is an additional explicit `--live` run; it was **not run here** because
+Ollama was unavailable. No ordinary test or CI job downloads model weights.
+
+Measured held-out split: **86 questions**, 150 chunks from 15 PDFs. Development has 110 questions.
+With real MiniLM embeddings, measured Recall@5 / MRR were:
+
+| Method | Recall@5 | MRR |
+|---|---:|---:|
+| BM25 | 0.9135 | 0.5949 |
+| FAISS | 0.9262 | 0.9873 |
+| Hybrid RRF | 0.9135 | 0.8797 |
+| Hybrid + lexical title reranker | 0.9135 | 1.0000 |
+
+These are actual local measurements, **not real-world accuracy**. Hybrid did not outperform FAISS
+on this fixture. Rules and boilerplate repeat; held-out questions were inspected during integration,
+so this is a regression benchmark rather than a pristine blind study. Reranking is lexical, not a
+neural cross-encoder. Answer checks are transparent numeric/behavior and citation proxies, not a
+semantic quality score. For example FAISS citation precision was only **0.525** despite high recall.
+Full metrics, failures, configurations and split hashes are in [release artifacts](docs/release/benchmarks/)
+and the Evaluation Lab. Runtime depends on hardware and cache state.
+
+## Actual application and finance demonstration
+
+![Overview with verified financial KPIs](docs/screenshots/overview-desktop.png)
+
+![Policy source and chunk inspection](docs/screenshots/policy-knowledge-base.png)
+
+![Measured RAG evaluation](docs/screenshots/evaluation-lab.png)
+
+The reproducible [October 2025 walkthrough](docs/DEMO_WALKTHROUGH.md) audits **101 rows**, EUR 6,220.13
+of actual expense against EUR 9,000 of represented budget. It finds 17 potential policy violations;
+EUR 4,727.21 is the union of recorded expenses requiring review, **not a confirmed loss**. The
+historical EUR 50 meal uses the 2025 EUR 40 threshold, not the 2026 EUR 60 threshold.
+
+[Feature-to-job evidence](docs/JOB_RELEVANCE_MAPPING.md) explains the demonstrated FP&A,
+data engineering, context engineering and agent skills. [The engineering report](docs/release/ENGINEERING_REPORT.md)
+records verified features, tests and limitations. Screenshots are real Chromium captures; local Qwen
+inference and MacBook performance remain unverified.
+
 ## Professional PDF audit reports
 
-After a complete audit, open **Audit report → Generate Audit Report**, select a period, and click
+After a complete audit, open **Reports → Generate Audit Report**, select a period, and click
 **Generate PDF Audit Report**. Preview it when supported by your browser or use **Download PDF Audit
 Report**. A narrower period requires **Prepare selected-period audit** first; its verified findings
 are displayed and used in the PDF. ReportLab/Matplotlib/PyMuPDF install through `./start.sh` automatically.
@@ -248,10 +306,12 @@ Reports include a cover, financial KPI summary, charts/tables, detailed findings
 citations, investigation priorities, and methodology/limitations. Generated bytes remain in session
 and are reused until source, audit, policy or options change. No Ollama is needed for PDF reporting.
 
-Optionally upload textual policy PDFs with declared title, version and effective date. Local keyword
-retrieval preserves page/section references and source hashes. Only exact supported per-transaction
-category-limit sentences are automatically checked; other passages are labeled related guidance.
-If no applicable supported rule exists, compliance is **not evaluated**, not declared compliant.
+Load the synthetic indexed policies in **Policy Knowledge Base**, or upload readable PDFs with
+explicitly declared metadata. The indexed path checks applicable PDF-derived thresholds, approvals,
+receipts and documented exceptions. It preserves historical versions, verifies file hashes/sections/
+pages and escalates conflicting or incomplete evidence. The older report-panel policy attachment
+adapter remains supported for its narrower sentence-based rules. Neither path treats missing evidence
+as compliance. See the [October 2025 report](docs/examples/ExpenseGuard_October_2025_RAG_Audit.pdf).
 
 AI explanations are limited to existing verified, finding-linked investigation actions from the
 agent audit, visibly separated from deterministic facts. No new free-form financial claims or
@@ -264,7 +324,7 @@ See [PDF workflow and limitations](docs/pdf-reports.md),
 
 ## GitHub-hosted companion frontend
 
-`site/` contains a burgundy, responsive **static report viewer** for GitHub Pages. It can load a
+`site/` contains a light green, responsive **static report viewer** for GitHub Pages. It can load a
 fictional demo or a locally exported JSON report, filter findings, inspect evidence, show spending
 and download the selected report. User-opened reports remain in the browser; there is no upload
 endpoint and no direct browser-to-Ollama access.
@@ -330,9 +390,9 @@ git switch -c feature/your-change
 
 This is a production-style portfolio implementation, not a certified audit platform. It supports
 one currency and nonnegative expenses only. Statistical thresholds can miss issues or flag legitimate
-spending. Department budgets may be incomplete in partial uploads. AI can select a limited audit
+spending. Department budgets may be incomplete in partial uploads. Request scope supports explicit known month/year, department and DE/FR country filters; broader language is not guaranteed. AI can select a limited audit
 scope; model recommendations require human review. Local Ollama/Qwen inference and Mac performance
-are not cloud-verified. No durable audit history, SSO, ERP integration or automated
+are not cloud-verified. The corpus is templated; general PDF table/metadata understanding is partial. Run-rate estimates require a complete-month assumption and are not trained forecasts. No durable audit history, SSO, ERP integration or automated
 payment decisions are implemented.
 
 Future work: separate budget-file ingestion, refunds/FX policy, case management, calibrated review
@@ -342,6 +402,10 @@ A cloud Streamlit host cannot reach Ollama running on a visitor’s Mac through 
 
 ## Documentation
 
+- [RAG evaluation and reproducibility](docs/RAG_EVALUATION.md)
+- [Job relevance mapping](docs/JOB_RELEVANCE_MAPPING.md)
+- [Finance demonstration](docs/DEMO_WALKTHROUGH.md)
+- [Engineering verification](docs/release/ENGINEERING_REPORT.md)
 - [Architecture and handover](docs/architecture.md)
 - [Agent workflow](docs/agent-workflow.md)
 - [Testing and verification](docs/testing.md)

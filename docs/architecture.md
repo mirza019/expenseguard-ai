@@ -20,7 +20,7 @@ flowchart TD
     DuckDB --> Dashboard
     Report --> Dashboard
     Report --> ValidateReport[Report validation]
-    Policies[Policy PDFs] --> RAG[PyMuPDF chunks and lexical RAG]
+    Policies[Policy PDFs] --> RAG[PyMuPDF hierarchical chunks + metadata + FAISS/BM25/RRF]
     RAG --> Citations[Verified policy citations]
     Citations --> ValidateReport
     ValidateReport --> PDF[ReportLab PDF]
@@ -96,3 +96,38 @@ The report panel retains PDF bytes with an input/options fingerprint. Narrow-per
 original row IDs and show their findings separately from the full-upload overview. The agent can
 request the same deterministic service after all four checks; no arbitrary rendering code is exposed.
 See [PDF reporting](pdf-reports.md) for the full schema, validation and policy grammar.
+
+
+## Integrated policy intelligence and evaluation
+
+`app/rag/index.py` extracts numbered sections with page provenance, parent/child context, applicability
+and document hashes. A persistent DuckDB metadata store accompanies the FAISS index; loading checks
+hashes, dimensions and row counts. Atomic replacement protects known index directories. Duplicate PDFs
+are detected by bytes hash. Unknown effective dates/scope are excluded from authoritative retrieval.
+
+Eligibility (incurred date, department and country) precedes ranking. BM25 and normalized FAISS results
+can be combined using RRF, followed by optional lexical title-overlap reranking. The no-download default
+is explicitly nonsemantic hashing; optional MiniLM provides semantic embeddings. Uploaded documents
+require declared metadata; general table/semantic metadata extraction remains partial.
+
+`app/rag/compliance.py` uses extracted, supported financial rules and deterministic employee/day amounts,
+receipts, approvals and exceptions. Financial compliance uses all eligible supported rules rather than
+assuming a top-k similarity result is authoritative. Conflicting limits require human review. Arbitrary
+policy language is not converted into executable rules. `verify_index_citations` checks actual source
+PDF bytes, sections and pages before PDF reporting. The older in-memory policy attachment adapter remains
+supported for its narrower per-transaction rules.
+
+`app/agents/request.py` conservatively extracts supported month/year, department and country scope.
+LangGraph keeps explicit state, calls registered tools, checks structured outputs and optionally runs
+policy retrieval. `app/agents/context.py` assembles SQL facts and bounded verified policy excerpts for
+ChatOllama. Eight versioned prompts separate instructions from untrusted evidence. Execution details
+are tool/status traces, not private chain-of-thought. Scoped results supply both dashboard and PDF.
+
+Financial data and policy sources are runtime inputs. Generator specifications, planted labels and
+questions live separately under `data/synthetic/ground_truth` and are not indexed or sent to normal
+agent prompts. `app/evaluation/benchmark.py` reads labels only after retrieval and prediction, computes
+metrics and writes ignored local results. Compact measured release artifacts are available to the
+Evaluation Lab when local results are absent. Evaluation never modifies financial records.
+
+See [RAG methodology](RAG_EVALUATION.md), [competency evidence](JOB_RELEVANCE_MAPPING.md) and
+[the engineering report](release/ENGINEERING_REPORT.md) for actual validation and limitations.

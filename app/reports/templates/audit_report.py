@@ -16,7 +16,7 @@ from reportlab.platypus import Image, LongTable, PageBreak, Paragraph, Spacer, T
 
 from app.reports.report_schema import AuditPDFReport
 
-WINE = colors.HexColor("#711D3C")
+WINE = colors.HexColor("#167D61")
 WIDTH = 174 * mm
 
 
@@ -103,7 +103,7 @@ def story(report: AuditPDFReport, images: dict[str, bytes]) -> list:
         tab.setStyle(
             TableStyle(
                 [
-                    ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#F1E7EC")),
+                    ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#EAF4EE")),
                     ("VALIGN", (0, 0), (-1, -1), "TOP"),
                     ("LINEBELOW", (0, 0), (-1, 0), 0.7, WINE),
                     ("LINEBELOW", (0, 1), (-1, -1), 0.25, colors.HexColor("#E4DEE1")),
@@ -307,6 +307,22 @@ def story(report: AuditPDFReport, images: dict[str, bytes]) -> list:
         )
         paragraphs(citation.explanation)
         paragraphs("Document SHA-256: " + citation.document_id + "; chunk: " + citation.chunk_id)
+    for finding in report.indexed_policies:
+        if finding["status"] in {"within_limit", "within_exception"}:
+            continue
+        items.append(p("Indexed policy review — " + finding["transaction_id"], "Heading2"))
+        paragraphs("Evidence status: " + finding["status"] + ". " + finding["reason"])
+        paragraphs(
+            "Affected expense: "
+            + money(finding["amount_cents"])
+            + ". Recommended action: "
+            + finding["action"]
+        )
+        for citation in finding["citations"]:
+            paragraphs(
+                f"{citation['title']}; version {citation['version']}; section {citation['section_id']}; pages {citation['page']}–{citation.get('page_end', citation['page'])}. "
+                + citation["quote"]
+            )
     items.extend([PageBreak(), p("Investigation Summary", "Heading1")])
     items.append(
         p(

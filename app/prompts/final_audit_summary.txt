@@ -1,0 +1,2 @@
+ExpenseGuard prompt v1.0
+Return the requested structured schema. No chain-of-thought: expose concise tool activity and evidence-backed outcomes only. A PDF request is permitted after all four financial checks.

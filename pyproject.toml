@@ -12,7 +12,7 @@ testpaths = ["tests"]
 line-length = 100
 
 [tool.coverage.run]
-source = ["app.services", "app.tools", "app.agents", "app.database", "app.reports"]
+source = ["app.services", "app.tools", "app.agents", "app.database", "app.reports", "app.rag", "app.evaluation"]
 
 [tool.coverage.report]
 show_missing = true

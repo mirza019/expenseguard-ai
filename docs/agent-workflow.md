@@ -70,3 +70,21 @@ complete. LangGraph builds the financial snapshot, then invokes deterministic re
 PDF rendering. The model supplies neither PDF code nor financial values. Explicit non-LLM callers
 can use `run_audit(data, generate_pdf=True)`. Failed validation returns `pdf_error` without bytes.
 The existing ordinary audit path remains unchanged and does not render on every run.
+
+
+## Policy and period context extension
+
+The entry point parses supported month/year, department and DE/FR scope and retains original source-row
+IDs. The scoped `ValidatedData` is returned with the audit; dashboard and PDF read that same object.
+An optional registered `policy_retrieval` tool performs supported deterministic controls against the
+loaded policy index. Its evidence is verified against original PDF hashes, applicability and sections.
+State carries the index, source root, policy results and failure status. Four financial calls, one
+policy step and the optional report action remain bounded. Policy failure does not invalidate verified
+financial calculations, but is explicit and prevents an unsupported policy PDF conclusion.
+
+The model context includes verified SQL totals, structured scope and bounded policy evidence. Modular
+prompts in `app/prompts/` cover interpretation, selection, retrieval, explanations, classification,
+evidence validation, summary and escalation. No model can execute arbitrary SQL/Python or modify
+records. The deterministic policy engine is the calculation authority. Tests in
+`test_policy_intelligence.py` exercise the integrated graph, source failures and mocked model paths;
+live Qwen tool selection remains unverified in this environment.

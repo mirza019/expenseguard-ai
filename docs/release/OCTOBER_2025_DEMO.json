@@ -1,0 +1,86 @@
+{
+  "period": "October 2025 (invoice date scope; policies use incurred transaction date)",
+  "source_rows": 101,
+  "currency": "EUR",
+  "actual_cents": 622013,
+  "budget_cents": 900000,
+  "variance_cents": -277987,
+  "financial_findings": 1,
+  "policy_status_counts": {
+    "potential_violation": 17,
+    "within_limit": 84
+  },
+  "recorded_review_exposure_cents": 472721,
+  "exposure_definition": "Unique affected recorded rows, including unresolved evidence. Not a loss estimate.",
+  "departments": [
+    {
+      "department": "Finance",
+      "actual_cents": 319186,
+      "budget_cents": 300000,
+      "variance_cents": 19186,
+      "variance_percent": 6.395333333333333
+    },
+    {
+      "department": "Operations",
+      "actual_cents": 297827,
+      "budget_cents": 300000,
+      "variance_cents": -2173,
+      "variance_percent": -0.7243333333333334
+    },
+    {
+      "department": "Sales",
+      "actual_cents": 5000,
+      "budget_cents": 300000,
+      "variance_cents": -295000,
+      "variance_percent": -98.33333333333333
+    }
+  ],
+  "scenario": {
+    "currency": "EUR",
+    "discretionary_actual_cents": 324186,
+    "reduction_fraction": 0.1,
+    "scenario_savings_cents": 32419,
+    "scenario_remaining_cents": 291767,
+    "scenario_assumption": "Apply reduction only to selected recorded categories; no behavioral or contractual effects modeled.",
+    "monthly_changes": [],
+    "year_end": null,
+    "next_action": "Review largest variances with cost-center owners and verify invoice timing and policy exceptions."
+  },
+  "historical_case": {
+    "source_row": 9,
+    "transaction_id": "RAG-TX-00007",
+    "department": "Sales",
+    "cost_center": "CC-SAL",
+    "amount_cents": 5000,
+    "date": "2025-10-15",
+    "country": "DE",
+    "category": "Meals",
+    "citations": [
+      {
+        "document_id": "meals-policy-v1",
+        "document_hash": "45ef2b270caf50c686915e1aec9588318605feb1d8ccd305c2c73bdc6c946d8f",
+        "title": "Meal and Entertainment Expenses",
+        "version": "1",
+        "section_id": "2.1",
+        "page": 2,
+        "quote": "2.1 Meals limits and approvals\n\nMeals expenses in Germany are limited to EUR 40.00 per day.\n\nAn itemized receipt is required. Standard approval role: manager. Compare the incurred date against this\ndocument’s effective period. The exception is in section 3.1 on page 3 and must be reviewed together with\nthis rule.\n\n          Department           Country        Limit (EUR)           Unit                        Approver\n\n\n         ALL             DE           40.00                per day                  manager\n\n",
+        "content_hash": "112e54f3bbdc54eda612f36ab839a753c0744d9ac77a069c4a08ade966de1eea",
+        "reference": "meals-policy-v1:2.1"
+      }
+    ],
+    "threshold_cents": 4000,
+    "observed_cents": 5000,
+    "unit": "per day",
+    "status": "potential_violation",
+    "reason": "Observed amount exceeds the applicable documented limit.",
+    "action": "Review invoice, scope, approvals and applicable exceptions before any payment decision."
+  },
+  "trace": [
+    "Executed and verified duplicates",
+    "Executed and verified budget",
+    "Executed and verified anomalies",
+    "Executed and verified missing_data",
+    "Retrieved and verified applicable policy evidence"
+  ],
+  "ai_generation": "not_run; deterministic mode does not require Ollama"
+}

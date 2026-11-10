@@ -147,6 +147,16 @@ def prepare_report(
     if mode not in {"agent", "deterministic"}:
         raise ReportValidationError("Unknown audit mode.")
     expected = build_report(data, canonical, mode, audit.get("errors", []), recommendations)
+    if audit.get("policy_index") is not None:
+        from app.rag.compliance import evaluate_compliance, verify_index_citations
+
+        verified_policies = evaluate_compliance(data, audit["policy_index"])
+        if audit.get("policy_root") is None:
+            raise ReportValidationError(
+                "Policy source directory is required for indexed citations."
+            )
+        verify_index_citations(verified_policies, audit["policy_index"], audit["policy_root"])
+        expected["indexed_policy_findings"] = verified_policies
     try:
         if json_report(expected) != json_report(report):
             raise ReportValidationError(
@@ -215,6 +225,12 @@ def prepare_report(
     citations, evaluations = policy_evidence(data, policies)
     for citation in citations:
         verify_citation(citation, data, policies)
+    indexed = expected.get("indexed_policy_findings", [])
+    indexed_comparisons = sum(
+        1 for f in indexed for c in f["citations"] if c["section_id"] in {"2.1", "2.2"}
+    )
+    if indexed_comparisons:
+        evaluations = (evaluations or 0) + indexed_comparisons
     notes = [
         InvestigationNote(
             origin="calculated",
@@ -293,6 +309,7 @@ def prepare_report(
         quality_issues=canonical["missing_data"].metrics["issue_count"],
         potential_policy_rows=len(
             {c.source_row for c in citations if c.assessment == "potential_violation"}
+            | {f["source_row"] for f in indexed if f["status"] == "potential_violation"}
         )
         if evaluations is not None
         else None,
@@ -316,6 +333,7 @@ def prepare_report(
             for p in policies
         ],
         policies=citations,
+        indexed_policies=expected.get("indexed_policy_findings", []),
         investigation=notes,
         methodology=[
             *data.transformations,

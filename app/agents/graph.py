@@ -5,6 +5,7 @@ from collections.abc import Callable
 from langgraph.graph import END, START, StateGraph
 
 from app.agents.finance_agent import OllamaPlanner
+from app.agents.request import apply_request, interpret_request
 from app.agents.state import ACTIONS, AuditState, Decision
 from app.agents.tools import build_tools
 from app.config import Settings
@@ -22,12 +23,16 @@ def run_audit(
     config: Settings | None = None,
     generate_pdf: bool = False,
     policies: tuple[PolicyDocument, ...] = (),
+    policy_index=None,
+    policy_root=None,
 ) -> AuditState:
     """Run session-local state; failures fall back explicitly, never masquerading as AI."""
     if mode not in {"agent", "deterministic"}:
         raise ValueError("Unknown execution mode.")
     if not goal.strip() or len(goal) > 2000:
         raise ValueError("Provide a goal between 1 and 2,000 characters.")
+    request = interpret_request(goal)
+    data = apply_request(data, request)
     config = config or Settings()
     if mode == "agent" and planner is None:
         planner = OllamaPlanner(config)
@@ -37,7 +42,16 @@ def run_audit(
     def plan(state: AuditState) -> dict:
         remaining = [name for name in TOOLS if name not in state["results"]]
         if state["mode"] == "deterministic":
-            return {"pending": remaining[0] if remaining else "", "done": not remaining}
+            pending = (
+                remaining[0]
+                if remaining
+                else (
+                    "policy_retrieval"
+                    if policy_index is not None and not state["policy_checked"]
+                    else ""
+                )
+            )
+            return {"pending": pending, "done": not pending}
         if state["calls"] >= config.max_calls or not remaining:
             # Allow one final inspection/explanation turn, but no more tool execution.
             remaining = []
@@ -53,6 +67,12 @@ def run_audit(
         ][:40]
         context = {
             "goal": state["goal"],
+            "structured_request": request.model_dump(mode="json"),
+            "verified_financial_context": {
+                "currency": "EUR",
+                "eligible_rows": len(data.eligible),
+                "expense_cents": int(data.eligible["amount_cents"].sum()),
+            },
             "remaining_tools": remaining,
             "completed_tools": list(state["results"]),
             "findings": evidence,
@@ -60,6 +80,33 @@ def run_audit(
             "approved_actions": ACTIONS,
             "registered_tools": {name: registered[name].description for name in remaining},
         }
+        context["verified_policy_context"] = [
+            {
+                "transaction_id": f["transaction_id"],
+                "date": f["date"],
+                "country": f["country"],
+                "department": f["department"],
+                "status": f["status"],
+                "reason": f["reason"],
+                "citations": [
+                    {
+                        "reference": c["reference"],
+                        "version": c["version"],
+                        "page": c["page"],
+                        "source_excerpt": c["quote"][:300],
+                    }
+                    for c in f["citations"][:2]
+                ],
+            }
+            for f in state["policy_findings"]
+            if f["status"] not in {"within_limit", "within_exception"}
+        ][:8]
+        if policy_index is not None and not state["policy_checked"]:
+            remaining.append("policy_retrieval")
+            context["remaining_tools"] = remaining
+            context["registered_tools"]["policy_retrieval"] = (
+                "Retrieve applicable historical policy evidence and deterministically evaluate expense controls."
+            )
         if len(state["results"]) == len(TOOLS):
             context["registered_tools"]["generate_report"] = (
                 "Generate a verified PDF after all checks."
@@ -109,6 +156,27 @@ def run_audit(
     def execute(state: AuditState) -> dict:
         name = state["pending"]
         try:
+            if name == "policy_retrieval":
+                from langchain_core.tools import StructuredTool
+
+                from app.rag.compliance import evaluate_compliance, verify_index_citations
+
+                def check_policy() -> dict:
+                    return {"findings": evaluate_compliance(state["data"], policy_index)}
+
+                policy_tool = StructuredTool.from_function(
+                    check_policy,
+                    name="policy_retrieval",
+                    description="Evaluate policy controls with applicable retrieved evidence.",
+                )
+                findings = policy_tool.invoke({})["findings"]
+                if policy_root is not None:
+                    verify_index_citations(findings, policy_index, policy_root)
+                return {
+                    "policy_checked": True,
+                    "policy_findings": findings,
+                    "trace": [*state["trace"], "Retrieved and verified applicable policy evidence"],
+                }
             result = ToolResult.model_validate(registered[name].invoke({}))
             validate_result(result, state["data"], name)
             return {
@@ -129,14 +197,38 @@ def run_audit(
         return {}
 
     def finish(state: AuditState) -> dict:
+        findings = state["policy_findings"]
+        errors = list(state["errors"])
+        policy_failure = False
+        if policy_index is not None and not state["policy_checked"]:
+            from app.rag.compliance import evaluate_compliance, verify_index_citations
+
+            try:
+                findings = evaluate_compliance(state["data"], policy_index)
+                if policy_root is not None:
+                    verify_index_citations(findings, policy_index, policy_root)
+            except (ValueError, OSError):
+                findings = []
+                policy_failure = True
+                errors.append(
+                    "Policy evidence could not be verified. Rebuild the policy index; compliance was not evaluated."
+                )
+        report = build_report(
+            state["data"],
+            state["results"],
+            state["mode"],
+            errors,
+            state["recommendations"],
+        )
+        if policy_index is not None:
+            report["indexed_policy_findings"] = findings
+        if policy_failure:
+            report["policy_error"] = "Policy evidence not verified; compliance not evaluated."
         return {
-            "report": build_report(
-                state["data"],
-                state["results"],
-                state["mode"],
-                state["errors"],
-                state["recommendations"],
-            )
+            "report": report,
+            "policy_findings": findings,
+            "policy_checked": policy_index is not None and not policy_failure,
+            "errors": errors,
         }
 
     def render_pdf(state: AuditState) -> dict:
@@ -192,6 +284,10 @@ def run_audit(
             "done": False,
             "pdf_requested": generate_pdf,
             "policies": policies,
+            "policy_index": policy_index,
+            "policy_root": policy_root,
+            "policy_checked": False,
+            "policy_findings": [],
         },
-        config={"recursion_limit": 40},
+        config={"recursion_limit": 60},
     )

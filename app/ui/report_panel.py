@@ -96,7 +96,15 @@ def pdf_report_panel(data: ValidatedData, audit: dict) -> None:
 
             try:
                 scoped = select_period(data, start, end)
-                cached = {"key": scoped_key, "data": scoped, "audit": run_audit(scoped)}
+                cached = {
+                    "key": scoped_key,
+                    "data": scoped,
+                    "audit": run_audit(
+                        scoped,
+                        policy_index=audit.get("policy_index"),
+                        policy_root=audit.get("policy_root"),
+                    ),
+                }
                 st.session_state["pdf_scoped_audit"] = cached
             except ReportValidationError as exc:
                 st.error(str(exc))
