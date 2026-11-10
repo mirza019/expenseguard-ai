@@ -73,13 +73,14 @@ The application uses no microservices or container orchestration. Node 22 is nee
 Supported: macOS Apple Silicon and Linux with **Python 3.11 or 3.12** already installed.
 
 ```bash
-git clone https://github.com/mirza019/expenseguard-ai.git
+git clone --branch docs/project-documentation https://github.com/mirza019/expenseguard-ai.git
 cd expenseguard-ai
 ./start.sh
 ```
 
-Until PR #1 is merged, run `git switch docs/project-documentation` after cloning to use the
-complete implementation. Main deliberately remains unchanged pending review.
+The command selects the implementation branch because PR #1 is still under review. If you already
+cloned the repository, run `git switch docs/project-documentation` and `git pull` first. Main deliberately
+remains unchanged pending review.
 
 `start.sh` locates its own project root, creates `.venv`, installs exactly pinned dependencies,
 creates `.env` from the example without replacing existing values, creates local directories,
