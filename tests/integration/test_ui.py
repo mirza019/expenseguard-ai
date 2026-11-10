@@ -3,12 +3,18 @@ from pathlib import Path
 from streamlit.testing.v1 import AppTest
 
 
-def test_sample_and_complete_audit():
+def test_sample_and_complete_audit(monkeypatch):
+    from app.services.model_manager import ModelStatus
+
+    monkeypatch.setattr(
+        "app.ui.model_setup.get_status",
+        lambda _: ModelStatus("unavailable", False, "qwen3:4b-q4_K_M", "Ollama Unavailable"),
+    )
     app = AppTest.from_file(
         Path(__file__).resolve().parents[2] / "app/main.py", default_timeout=60
     ).run()
     assert not app.exception
-    app.button[0].click().run()
+    next(b for b in app.button if b.label == "Load fictional sample dataset").click().run()
     assert not app.exception
     assert app.metric[0].value != "0.00"
     next(b for b in app.button if b.label == "Run complete deterministic audit").click().run()

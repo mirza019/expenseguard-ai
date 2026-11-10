@@ -6,10 +6,11 @@ from langgraph.graph import END, START, StateGraph
 
 from app.agents.finance_agent import OllamaPlanner
 from app.agents.state import ACTIONS, AuditState, Decision
+from app.agents.tools import build_tools
 from app.config import Settings
-from app.services.analytics import TOOLS, execute_tool, validate_result
+from app.services.analytics import TOOLS, validate_result
 from app.services.reporting import build_report
-from app.services.validation import ValidatedData
+from app.services.validation import ToolResult, ValidatedData
 
 
 def run_audit(
@@ -27,6 +28,8 @@ def run_audit(
     config = config or Settings()
     if mode == "agent" and planner is None:
         planner = OllamaPlanner(config)
+
+    registered = build_tools(data)
 
     def plan(state: AuditState) -> dict:
         remaining = [name for name in TOOLS if name not in state["results"]]
@@ -52,6 +55,7 @@ def run_audit(
             "findings": evidence,
             "instructions": "Select finish if remaining_tools is empty.",
             "approved_actions": ACTIONS,
+            "registered_tools": {name: registered[name].description for name in remaining},
         }
         try:
             decision = Decision.model_validate(planner(context).model_dump())
@@ -90,7 +94,8 @@ def run_audit(
     def execute(state: AuditState) -> dict:
         name = state["pending"]
         try:
-            result = execute_tool(name, state["data"])
+            result = ToolResult.model_validate(registered[name].invoke({}))
+            validate_result(result, state["data"], name)
             return {
                 "results": {**state["results"], name: result},
                 "calls": state["calls"] + 1,

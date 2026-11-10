@@ -10,7 +10,8 @@ import streamlit as st  # noqa: E402
 
 from app.ui.agent_panel import agent_panel, audit_panel, report_panel  # noqa: E402
 from app.ui.dashboard import dashboard  # noqa: E402
-from app.ui.upload import upload_panel  # noqa: E402
+from app.ui.model_setup import model_setup_panel  # noqa: E402
+from app.ui.upload import upload_panel
 
 
 def main() -> None:
@@ -26,6 +27,7 @@ def main() -> None:
     )
     st.title("ExpenseGuard AI")
     st.caption("Evidence-first expense auditing · Local AI optional · Human review required")
+    model_status = model_setup_panel()
     tabs = st.tabs(["Upload", "Overview", "Audit analysis", "AI agent", "Audit report"])
     with tabs[0]:
         data = upload_panel()
@@ -37,7 +39,7 @@ def main() -> None:
     with tabs[2]:
         audit_panel(data)
     with tabs[3]:
-        agent_panel(data)
+        agent_panel(data, model_status)
     with tabs[4]:
         report_panel()
 

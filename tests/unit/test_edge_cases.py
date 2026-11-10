@@ -79,7 +79,7 @@ def test_missing_evidence_status_and_infinity():
 
 def test_tool_failure_is_explicit():
     frame, _ = generate()
-    with patch("app.agents.graph.execute_tool", side_effect=ValueError("failed")):
+    with patch("app.agents.tools.execute_tool", side_effect=ValueError("failed")):
         state = run_audit(validate(frame))
     assert state["errors"]
     assert not state["report"]["tools_run"]
@@ -87,7 +87,7 @@ def test_tool_failure_is_explicit():
 
 def test_default_model_unavailable():
     frame, _ = generate()
-    with patch("app.agents.finance_agent.requests.post", side_effect=ConnectionError):
+    with patch("app.agents.finance_agent.ChatOllama", side_effect=ConnectionError):
         state = run_audit(validate(frame), mode="agent")
     assert state["mode"] == "deterministic"
     assert len(state["results"]) == 4

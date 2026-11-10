@@ -6,6 +6,7 @@ import streamlit as st
 from app.agents.graph import run_audit
 from app.config import settings
 from app.services.analytics import TOOLS, execute_tool
+from app.services.model_manager import ModelStatus
 from app.services.reporting import json_report, markdown_report
 from app.services.validation import ValidatedData
 
@@ -26,7 +27,7 @@ def audit_panel(data: ValidatedData) -> None:
         st.rerun()
 
 
-def agent_panel(data: ValidatedData) -> None:
+def agent_panel(data: ValidatedData, model_status: ModelStatus | None = None) -> None:
     """Optional local inference; explicit fallback status is shown in final state."""
     st.subheader("Local AI agent")
     st.info(
@@ -38,7 +39,7 @@ def agent_panel(data: ValidatedData) -> None:
         value="Audit the expenses and identify the biggest financial risks.",
         max_chars=2000,
     )
-    if st.button("Run agent"):
+    if st.button("Run agent", disabled=model_status is None or model_status.state != "ready"):
         try:
             with st.spinner("Agent selecting tools and inspecting evidence…"):
                 st.session_state["audit"] = run_audit(data, goal, mode="agent", config=settings())
