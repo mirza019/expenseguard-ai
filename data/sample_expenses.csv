@@ -1,0 +1,4 @@
+expense_id,employee_id,date,merchant,category,amount,currency
+EXP001,EMP001,2026-10-01,Sample Hotel,Travel,180.00,EUR
+EXP002,EMP001,2026-10-01,Sample Hotel,Travel,180.00,EUR
+EXP003,EMP002,2026-10-02,Sample Office Store,Supplies,42.50,EUR

@@ -1,0 +1,2 @@
+# Development dependency; add runtime dependencies as features are implemented.
+pytest>=8.3,<9
