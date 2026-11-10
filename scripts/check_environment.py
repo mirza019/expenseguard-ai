@@ -33,6 +33,9 @@ def check_dependencies(root: Path = ROOT) -> None:
         "pydantic",
         "plotly",
         "openpyxl",
+        "reportlab",
+        "matplotlib",
+        "pymupdf",
     ]:
         importlib.import_module(name)
 

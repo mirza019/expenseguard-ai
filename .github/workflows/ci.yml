@@ -15,6 +15,7 @@ jobs:
     env:
       LANGCHAIN_TRACING_V2: 'false'
       LANGSMITH_TRACING: 'false'
+      MPLBACKEND: Agg
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -27,7 +28,7 @@ jobs:
           node-version: '22'
       - run: bash -n start.sh
       - run: python scripts/check_environment.py
-      - run: python -c "import app.main; import app.agents.graph; import app.services.model_manager"
+      - run: python -c "import app.main; import app.agents.graph; import app.services.model_manager; import app.reports.pdf_generator"
       - run: node --check site/app.mjs
       - run: node --test tests/frontend/report.test.mjs
       - run: python scripts/build_pages_demo.py

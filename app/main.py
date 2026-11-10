@@ -41,7 +41,7 @@ def main() -> None:
     with tabs[3]:
         agent_panel(data, model_status)
     with tabs[4]:
-        report_panel()
+        report_panel(data)
 
 
 if __name__ == "__main__":

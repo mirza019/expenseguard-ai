@@ -42,7 +42,13 @@ def agent_panel(data: ValidatedData, model_status: ModelStatus | None = None) ->
     if st.button("Run agent", disabled=model_status is None or model_status.state != "ready"):
         try:
             with st.spinner("Agent selecting tools and inspecting evidence…"):
-                st.session_state["audit"] = run_audit(data, goal, mode="agent", config=settings())
+                st.session_state["audit"] = run_audit(
+                    data,
+                    goal,
+                    mode="agent",
+                    config=settings(),
+                    policies=tuple(st.session_state.get("policy_documents", ())),
+                )
             st.rerun()
         except ValueError as exc:
             st.error(str(exc))
@@ -52,9 +58,18 @@ def agent_panel(data: ValidatedData, model_status: ModelStatus | None = None) ->
         st.write("Execution trace:", audit["trace"])
         for error in audit["errors"]:
             st.warning(error)
+        if audit.get("pdf_error"):
+            st.warning(audit["pdf_error"])
+        if audit.get("pdf_bytes"):
+            st.download_button(
+                "Download agent-requested PDF",
+                audit["pdf_bytes"],
+                "ExpenseGuard_Agent_Audit_Report.pdf",
+                mime="application/pdf",
+            )
 
 
-def report_panel() -> None:
+def report_panel(data: ValidatedData | None = None) -> None:
     """Display structured findings and export evidence, preserving all source references."""
     audit = st.session_state.get("audit")
     if not audit:
@@ -106,3 +121,8 @@ def report_panel() -> None:
             "expense-findings.csv",
             mime="text/csv",
         )
+
+    if data is not None:
+        from app.ui.report_panel import pdf_report_panel
+
+        pdf_report_panel(data, audit)

@@ -10,7 +10,7 @@ python -m pytest --cov --cov-report=term-missing --cov-report=xml
 
 ## Coverage scope
 
-Coverage includes services, tools, agents and the DuckDB adapter. Streamlit rendering and synthetic
+Coverage includes services, tools, agents, the DuckDB adapter and reporting models/renderers/templates. Streamlit rendering and synthetic
 generation are tested but excluded from the business-logic coverage denominator. An 80% minimum
 is enforced in `pyproject.toml`. Coverage is a regression aid, not evidence of real-world fraud
 accuracy or production readiness.
@@ -35,14 +35,15 @@ package index but test execution itself requires no external service.
 
 ## Measured local result
 
-Linux, Python 3.12.14: **75 tests passed; 100% statement coverage of 437 core statements** after
-ChatOllama, model setup and startup integration. Three Node frontend tests also passed. Ruff and
-formatting checks passed. This describes the tested revision; rerun after changes. Statement coverage
-is not complete branch coverage or evidence of real-world fraud accuracy.
+Linux, Python 3.12.14: **111 tests passed; 97.72% statement coverage of 1,010 core/reporting
+statements** after the PDF reporting extension. Three Node frontend tests passed. Ruff, formatting,
+shell syntax, pinned dependency/configuration checks and pip consistency checks passed. Coverage now
+includes report models, chart rendering, PDF composition and policy validation as well as the existing
+financial/agent modules. It is not a claim of complete branch coverage or production audit accuracy.
 
-The actual `./start.sh` launched Streamlit successfully on loopback. Mock-interpreter tests exercise
-first-run venv creation, repeated starts, missing dependencies, changed pins, installation failure,
-unsupported Python and setup locking without installing anything or downloading models.
+The actual `./start.sh` installed/reused the pinned reporting dependencies and launched Streamlit;
+the HTTP health endpoint returned `ok`. A4 PDF pages were rendered using PyMuPDF and inspected, with
+automated text bounds/overlap checks, readable extraction and long-table pagination tests.
 
 ## CI
 
@@ -77,3 +78,20 @@ node --check site/app.mjs
 node --test tests/frontend/report.test.mjs
 python scripts/build_pages_demo.py
 ```
+
+## PDF reporting checks
+
+The suite covers verified monetary totals, period changes, source-row mapping and cross-period ID
+revalidation, chart/table reconciliation, financial finding references, policy citation fabrication,
+version/effective-date selection, related guidance versus exceptions, invalid numerics, empty findings,
+long Unicode descriptions, large tables, actual PDF rendering, download/cache behavior, optional
+LangGraph report actions and CSV-to-audit-to-PDF integration. No model/API is needed.
+
+```bash
+python -m pytest tests/unit/test_pdf_generator.py tests/unit/test_report_validation.py \
+  tests/unit/test_policy_rag.py tests/integration/test_report_workflow.py
+python scripts/generate_sample_report.py
+```
+
+The example is generated solely from fictional data and policy text. Its 11 pages (about 175 KB)
+were visually inspected for chart labels, table continuation, findings and policy references.

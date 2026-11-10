@@ -37,7 +37,8 @@ class OllamaPlanner:
             "inspect its verified results, then select another or finish. Comprehensive audits "
             "need all four tools. Return only the schema. Recommendations must reference supplied "
             "finding IDs and approved actions. Never invent financial numbers or evidence. "
-            "Select finish when no tools remain. /no_think"
+            "After all four tools, select generate_report only if the user requests a PDF; otherwise "
+            "select finish when no tools remain. /no_think"
         )
         result = self._structured.invoke(
             [SystemMessage(content=system), HumanMessage(content=text)]

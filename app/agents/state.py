@@ -22,7 +22,7 @@ class Recommendation(BaseModel):
 
 class Decision(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    tool: Literal["duplicates", "budget", "anomalies", "missing_data", "finish"]
+    tool: Literal["duplicates", "budget", "anomalies", "missing_data", "finish", "generate_report"]
     recommendations: list[Recommendation] = Field(default_factory=list, max_length=8)
 
 
@@ -39,3 +39,7 @@ class AuditState(TypedDict, total=False):
     recommendations: list[dict]
     done: bool
     report: dict
+    pdf_requested: bool
+    pdf_bytes: bytes
+    pdf_error: str
+    policies: tuple

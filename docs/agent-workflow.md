@@ -62,3 +62,11 @@ button; streaming progress is shown, generators are closed, exceptions are conve
 errors, and the model is checked again after completion. No model download occurs on import,
 startup, in tests, or CI. ChatOllama initialization is lazy and validates installed model availability
 on an explicit audit request. The default is qwen3:4b-q4_K_M.
+
+## Optional PDF action
+
+`generate_report` is an allowlisted terminal action available only after all four financial tools
+complete. LangGraph builds the financial snapshot, then invokes deterministic report validation and
+PDF rendering. The model supplies neither PDF code nor financial values. Explicit non-LLM callers
+can use `run_audit(data, generate_pdf=True)`. Failed validation returns `pdf_error` without bytes.
+The existing ordinary audit path remains unchanged and does not render on every run.

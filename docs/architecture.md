@@ -19,6 +19,12 @@ flowchart TD
     Evidence --> Report
     DuckDB --> Dashboard
     Report --> Dashboard
+    Report --> ValidateReport[Report validation]
+    Policies[Policy PDFs] --> RAG[PyMuPDF chunks and lexical RAG]
+    RAG --> Citations[Verified policy citations]
+    Citations --> ValidateReport
+    ValidateReport --> PDF[ReportLab PDF]
+    PDF --> Downloads
     Report --> Downloads
 ```
 
@@ -78,3 +84,15 @@ equivalent but remains unverified without PowerShell on the test machine.
 
 GitHub Pages serves only the report viewer. Its manual workflow builds a fixed fictional report; it
 never publishes private uploads, serves Python or connects a public browser to a private model.
+
+## PDF reporting extension
+
+Report validation independently reconciles tool results, source references, financial series and
+policy citations before passing an immutable Pydantic report to ReportLab. Matplotlib Agg provides
+headless charts. Financial input remains CSV/XLSX; policy PDFs are separate versioned sources. No
+transaction-to-PDF intermediate analysis is used. Source bytes/chunks stay in session memory.
+
+The report panel retains PDF bytes with an input/options fingerprint. Narrow-period reaudits preserve
+original row IDs and show their findings separately from the full-upload overview. The agent can
+request the same deterministic service after all four checks; no arbitrary rendering code is exposed.
+See [PDF reporting](pdf-reports.md) for the full schema, validation and policy grammar.

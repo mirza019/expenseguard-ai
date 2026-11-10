@@ -1,6 +1,12 @@
 """Evidence-based reports; all figures originate from verified tools."""
 
 import json
+from datetime import date
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.reports.report_schema import AuditPDFReport
+    from app.services.policy_rag import PolicyDocument
 
 from app.services.validation import ToolResult, ValidatedData
 
@@ -87,3 +93,19 @@ def markdown_report(report: dict) -> str:
 def json_report(report: dict) -> str:
     """Export complete structured evidence."""
     return json.dumps(report, indent=2, allow_nan=False)
+
+
+def pdf_report(
+    data: ValidatedData,
+    audit: dict,
+    start: date,
+    end: date,
+    include_ai: bool = False,
+    policies: tuple["PolicyDocument", ...] = (),
+) -> tuple["AuditPDFReport", bytes]:
+    """Validate financial/policy evidence, then render the same structured report deterministically."""
+    from app.reports.pdf_generator import generate_pdf
+    from app.services.report_validation import prepare_report
+
+    verified = prepare_report(data, audit, start, end, include_ai, policies)
+    return verified, generate_pdf(verified)

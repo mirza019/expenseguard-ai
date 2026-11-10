@@ -29,6 +29,8 @@ def upload_panel() -> ValidatedData | None:
             st.session_state["data"] = candidate
             st.session_state.pop("audit", None)
             st.session_state.pop("individual", None)
+            for key in ["pdf_artifact", "pdf_scoped_audit", "pdf_start", "pdf_end", "pdf_preview"]:
+                st.session_state.pop(key, None)
         except (IngestionError, ValueError) as exc:
             # Preserve the previous validated dataset, but clearly identify the failure.
             st.error(str(exc))

@@ -9,6 +9,7 @@ from app.agents.state import ACTIONS, AuditState, Decision
 from app.agents.tools import build_tools
 from app.config import Settings
 from app.services.analytics import TOOLS, validate_result
+from app.services.policy_rag import PolicyDocument
 from app.services.reporting import build_report
 from app.services.validation import ToolResult, ValidatedData
 
@@ -19,6 +20,8 @@ def run_audit(
     mode: str = "deterministic",
     planner: Callable[[dict], Decision] | None = None,
     config: Settings | None = None,
+    generate_pdf: bool = False,
+    policies: tuple[PolicyDocument, ...] = (),
 ) -> AuditState:
     """Run session-local state; failures fall back explicitly, never masquerading as AI."""
     if mode not in {"agent", "deterministic"}:
@@ -57,9 +60,18 @@ def run_audit(
             "approved_actions": ACTIONS,
             "registered_tools": {name: registered[name].description for name in remaining},
         }
+        if len(state["results"]) == len(TOOLS):
+            context["registered_tools"]["generate_report"] = (
+                "Generate a verified PDF after all checks."
+            )
         try:
             decision = Decision.model_validate(planner(context).model_dump())
-            if decision.tool != "finish" and decision.tool not in remaining:
+            if decision.tool == "generate_report" and len(state["results"]) != len(TOOLS):
+                raise ValueError("Complete all checks before requesting a PDF.")
+            if (
+                decision.tool not in {"finish", "generate_report"}
+                and decision.tool not in remaining
+            ):
                 raise ValueError("Model selected an unavailable or repeated tool.")
             available_ids = {item["finding_id"] for item in evidence}
             if any(r.finding_id not in available_ids for r in decision.recommendations):
@@ -69,8 +81,9 @@ def run_audit(
                 for r in decision.recommendations
             ]
             return {
-                "pending": "" if decision.tool == "finish" else decision.tool,
-                "done": decision.tool == "finish",
+                "pending": "" if decision.tool in {"finish", "generate_report"} else decision.tool,
+                "done": decision.tool in {"finish", "generate_report"},
+                "pdf_requested": state["pdf_requested"] or decision.tool == "generate_report",
                 "recommendations": recs,
                 "trace": [*state["trace"], f"Model selected {decision.tool}"],
             }
@@ -82,6 +95,8 @@ def run_audit(
                 "retries": retries,
                 "pending": "",
                 "done": False,
+                "pdf_requested": generate_pdf,
+                "policies": policies,
                 "mode": "deterministic" if fallback else "agent",
                 "errors": [
                     *state["errors"],
@@ -124,18 +139,45 @@ def run_audit(
             )
         }
 
+    def render_pdf(state: AuditState) -> dict:
+        from app.services.reporting import pdf_report
+
+        try:
+            dates = state["data"].cleaned["date"].dropna()
+            if dates.empty:
+                raise ValueError("No dated transactions.")
+            _, content = pdf_report(
+                state["data"],
+                state,
+                dates.min().date(),
+                dates.max().date(),
+                include_ai=True,
+                policies=state["policies"],
+            )
+            return {
+                "pdf_bytes": content,
+                "trace": [*state["trace"], "Validated and generated PDF report"],
+            }
+        except Exception:
+            return {
+                "pdf_error": "PDF validation or rendering failed; no PDF was issued.",
+                "trace": [*state["trace"], "PDF generation failed"],
+            }
+
     graph = StateGraph(AuditState)
     graph.add_node("plan", plan)
     graph.add_node("execute", execute)
     graph.add_node("validate", validate)
     graph.add_node("finish", finish)
+    graph.add_node("render_pdf", render_pdf)
     graph.add_edge(START, "plan")
     graph.add_conditional_edges(
         "plan", lambda s: "finish" if s.get("done") else ("execute" if s.get("pending") else "plan")
     )
     graph.add_conditional_edges("execute", lambda s: "finish" if s.get("done") else "validate")
     graph.add_edge("validate", "plan")
-    graph.add_edge("finish", END)
+    graph.add_conditional_edges("finish", lambda s: "render_pdf" if s["pdf_requested"] else END)
+    graph.add_edge("render_pdf", END)
     return graph.compile().invoke(
         {
             "data": data,
@@ -148,6 +190,8 @@ def run_audit(
             "trace": [],
             "recommendations": [],
             "done": False,
+            "pdf_requested": generate_pdf,
+            "policies": policies,
         },
         config={"recursion_limit": 40},
     )

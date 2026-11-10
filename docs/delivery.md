@@ -55,7 +55,7 @@ All packages include initialization modules. The legacy three-row sample remains
 
 ## Verification boundary
 
-75 tests passed with 100% core statement coverage; three frontend tests passed on Linux/Python 3.12.14; lint/formatting passed.
+111 tests passed with 97.72% core/reporting statement coverage; three frontend tests passed on Linux/Python 3.12.14; lint/formatting passed.
 Streamlit AppTest completed sample loading and the full audit. A real Streamlit server was started
 and its local /_stcore/health endpoint returned `ok`. No production deployment or merge was performed.
 Live Qwen inference, a real model download, Mac hardware performance, Windows PowerShell execution and a real browser screenshot remain unverified.
@@ -73,3 +73,17 @@ report viewer, and manual-only Pages workflow. No automatic model download, merg
 
 After review, enable Pages → GitHub Actions and manually dispatch the companion workflow. The
 static viewer does not replace the local Python/Ollama audit application.
+
+## PDF report extension
+
+The current branch remains the safe integration branch because main still contains only the scaffold.
+The PDF feature adds validated Pydantic report data, deterministic reconciliation, ReportLab A4 layout,
+Matplotlib Agg charts, page-aware PyMuPDF policy retrieval/citation checks, period-specific audits,
+Streamlit preview/download/cache controls and an optional LangGraph generation action.
+
+The repository previously had no policy retrieval implementation; the new in-memory adapter is
+explicitly lexical and supports narrow category-limit rules. It does not claim full semantic policy
+understanding or exhaustive compliance. Other retrieved passages remain guidance.
+
+Example: docs/examples/ExpenseGuard_Synthetic_Audit_Report.pdf (11 pages, about 175 KB), with a
+fictional policy PDF and a reproducible generation script. No confidential data is committed.
