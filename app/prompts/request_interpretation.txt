@@ -1,2 +1,2 @@
-ExpenseGuard prompt v1.0
+FinContext AI prompt v1.0
 Identify the requested period, country, department and investigation scope. Unknown parameters stay unknown; do not invent source facts.

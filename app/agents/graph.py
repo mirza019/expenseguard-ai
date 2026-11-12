@@ -15,6 +15,22 @@ from app.services.reporting import build_report
 from app.services.validation import ToolResult, ValidatedData
 
 
+def _goal_tools(goal: str) -> list[str]:
+    """Conservatively route explicit focused questions; broad goals retain every check."""
+    text = goal.casefold()
+    selected = []
+    signals = {
+        "duplicates": ("duplicate", "paid twice", "double payment"),
+        "budget": ("budget", "overspend", "variance"),
+        "anomalies": ("unusual", "anomal", "outlier", "large expense"),
+        "missing_data": ("missing", "invalid", "incomplete data"),
+    }
+    for tool, words in signals.items():
+        if any(word in text for word in words):
+            selected.append(tool)
+    return selected or list(TOOLS)
+
+
 def run_audit(
     data: ValidatedData,
     goal: str = "Audit all expenses",
@@ -38,9 +54,11 @@ def run_audit(
         planner = OllamaPlanner(config)
 
     registered = build_tools(data)
+    goal_tools = _goal_tools(goal)
 
     def plan(state: AuditState) -> dict:
-        remaining = [name for name in TOOLS if name not in state["results"]]
+        planned = list(TOOLS) if state["mode"] == "deterministic" else goal_tools
+        remaining = [name for name in planned if name not in state["results"]]
         if state["mode"] == "deterministic":
             pending = (
                 remaining[0]
@@ -52,6 +70,12 @@ def run_audit(
                 )
             )
             return {"pending": pending, "done": not pending}
+        if not remaining and len(goal_tools) < len(TOOLS):
+            return {
+                "pending": "",
+                "done": True,
+                "trace": [*state["trace"], "Focused goal completed with verified evidence"],
+            }
         if state["calls"] >= config.max_calls or not remaining:
             # Allow one final inspection/explanation turn, but no more tool execution.
             remaining = []
@@ -121,11 +145,20 @@ def run_audit(
             ):
                 raise ValueError("Model selected an unavailable or repeated tool.")
             available_ids = {item["finding_id"] for item in evidence}
-            if any(r.finding_id not in available_ids for r in decision.recommendations):
+            # Recommendations are an inspection/finalization concern. Some small local
+            # models attach speculative IDs while making an otherwise valid tool choice,
+            # including before any findings exist. Never retain those claims, but do not
+            # discard the independently valid, allowlisted tool selection either.
+            recommendations = (
+                decision.recommendations
+                if decision.tool in {"finish", "generate_report"}
+                else []
+            )
+            if any(r.finding_id not in available_ids for r in recommendations):
                 raise ValueError("Model referenced unavailable evidence.")
             recs = [
                 {"finding_id": r.finding_id, "action": ACTIONS[r.action]}
-                for r in decision.recommendations
+                for r in recommendations
             ]
             return {
                 "pending": "" if decision.tool in {"finish", "generate_report"} else decision.tool,

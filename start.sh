@@ -3,7 +3,7 @@
 set -euo pipefail
 ROOT="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
-printf '\nExpenseGuard AI — Starting...\n\n'
+printf '\nFinContext AI — Starting...\n\n'
 fail() { printf '\n[ERROR] %s\n' "$*" >&2; exit 1; }
 trap 'printf "\n[ERROR] Startup failed at line %s. Fix the error above and rerun ./start.sh.\n" "$LINENO" >&2' ERR
 
@@ -61,5 +61,5 @@ printf '[OK] Demo dataset available\n'
 printf '[OK] Application configuration ready\n'
 cleanup
 trap - EXIT
-printf '\nStarting ExpenseGuard AI...\n\n'
+printf '\nStarting FinContext AI...\n\n'
 exec "$VENV_PY" -m streamlit run app/main.py --server.address 127.0.0.1 "$@"

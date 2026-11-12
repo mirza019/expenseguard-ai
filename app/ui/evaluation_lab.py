@@ -52,7 +52,7 @@ def evaluation_lab() -> None:
             labels={"value": "Score (0–1)", "method": "Retrieval method"},
             color_discrete_sequence=["#105C48", "#167D61", "#82AC96", "#C2DACC"],
         ),
-        width="stretch",
+        config={"displayModeBar": False, "responsive": True},
     )
     st.subheader("Grounded answer checks — deterministic proxy scores")
     st.caption(
@@ -93,7 +93,7 @@ def evaluation_lab() -> None:
                 title="Selected retrieval failures by question type",
                 color_discrete_sequence=["#B7791F"],
             ),
-            width="stretch",
+            config={"displayModeBar": False, "responsive": True},
         )
         row_id = st.selectbox("Inspect question", chosen["question_id"].tolist())
         row = chosen.loc[chosen["question_id"] == row_id].iloc[0]

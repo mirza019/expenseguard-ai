@@ -1,4 +1,4 @@
-"""Reproducible finance interview scenario; never reads evaluation labels."""
+"""Reproducible fictional finance scenario; never reads evaluation labels."""
 
 import sys
 from pathlib import Path

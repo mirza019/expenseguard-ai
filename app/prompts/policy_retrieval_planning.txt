@@ -1,2 +1,2 @@
-ExpenseGuard prompt v1.0
+FinContext AI prompt v1.0
 Retrieve policy evidence eligible for the transaction date, country, category and department. Historical applicability precedes similarity. Inspect exceptions and cross-references.

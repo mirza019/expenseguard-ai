@@ -66,7 +66,7 @@ def build_report(
 def markdown_report(report: dict) -> str:
     """Export safe plain Markdown; source fields are kept in JSON evidence instead."""
     lines = [
-        "# ExpenseGuard AI — Audit report",
+        "# FinContext AI — Audit report",
         "",
         f"Mode: {report['mode']}",
         f"Eligible expense: EUR {report['total_actual_cents'] / 100:,.2f}",

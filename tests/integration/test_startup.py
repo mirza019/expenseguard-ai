@@ -4,7 +4,6 @@ import json
 import os
 import shutil
 import subprocess
-import sys
 from pathlib import Path
 
 import pytest
@@ -51,7 +50,8 @@ def project(tmp_path):
     (root / "requirements.txt").write_text("example==1.0\n")
     (root / ".env.example").write_text("OLLAMA_MODEL=qwen3:4b-q4_K_M\n")
     fake = tmp_path / "fake-python"
-    fake.write_text(f"#!{sys.executable}\n" + FAKE_PYTHON)
+    # /usr/bin/env avoids an invalid shebang when the repository path contains spaces.
+    fake.write_text("#!/usr/bin/env python3\n" + FAKE_PYTHON)
     fake.chmod(0o755)
     log = tmp_path / "calls.jsonl"
     env = dict(os.environ, EXPENSEGUARD_PYTHON=str(fake), FAKE_LOG=str(log))

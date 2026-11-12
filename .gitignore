@@ -19,3 +19,5 @@ coverage.xml
 *.gguf
 site/demo-report.json
 data/evaluation/results/
+.agents/skills/developing-with-streamlit
+.claude/skills/developing-with-streamlit

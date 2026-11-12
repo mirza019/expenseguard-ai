@@ -61,6 +61,47 @@ def test_unknown_reference_rejected(data):
     assert not state["recommendations"]
 
 
+def test_speculative_recommendation_does_not_reject_valid_tool(data):
+    calls = 0
+
+    def planner(_):
+        nonlocal calls
+        calls += 1
+        if calls == 1:
+            return Decision(
+                tool="duplicates",
+                recommendations=[
+                    Recommendation(finding_id="invented:99", action="review_invoice")
+                ],
+            )
+        return Decision(tool="finish")
+
+    state = run_audit(data, mode="agent", planner=planner)
+    assert state["mode"] == "agent"
+    assert state["calls"] == 1
+    assert not state["recommendations"]
+    assert state["trace"][0] == "Model selected duplicates"
+
+
+def test_focused_goal_stops_after_relevant_verified_tool(data):
+    decisions = []
+
+    def planner(context):
+        decisions.append(context["remaining_tools"])
+        return Decision(tool=context["remaining_tools"][0])
+
+    state = run_audit(
+        data,
+        goal="Find possible duplicate payments and show why each was flagged.",
+        mode="agent",
+        planner=planner,
+    )
+    assert list(state["results"]) == ["duplicates"]
+    assert state["calls"] == 1
+    assert state["retries"] == 0
+    assert decisions == [["duplicates"]]
+
+
 def test_repeat_and_max_calls(data):
     state = run_audit(
         data,

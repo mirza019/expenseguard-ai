@@ -81,6 +81,6 @@ $('search').addEventListener('input', renderFindings);
 $('download').addEventListener('click', () => {
   if (!report) return;
   const url = URL.createObjectURL(new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' }));
-  const link = element('a'); link.href = url; link.download = 'expenseguard-report.json'; link.click();
+  const link = element('a'); link.href = url; link.download = 'fincontext-report.json'; link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 });

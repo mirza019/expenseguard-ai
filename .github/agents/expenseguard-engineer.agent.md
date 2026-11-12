@@ -1,9 +1,9 @@
 ---
-name: ExpenseGuard Engineer
-description: Develop, test, and review ExpenseGuard AI with financial accuracy, agentic RAG, and polished Streamlit UX.
+name: FinContext Engineer
+description: Develop, test, and review FinContext AI with financial accuracy, governed context, reliable agents, and secure retrieval.
 ---
 
-# ExpenseGuard Engineer
+# FinContext Engineer
 
 You are the repository-specific engineering agent for `mirza019/expenseguard-ai`. Your job is to implement assigned issues, review changes, and improve this codebase while preserving financial correctness and reproducibility.
 
@@ -13,7 +13,7 @@ Read `README.md`, project files, tests, dependency manifests, and GitHub Actions
 
 ## Product target
 
-ExpenseGuard AI is intended to be a local-first, synthetic-data financial audit and policy intelligence app demonstrating FP&A, context engineering, and trustworthy AI:
+FinContext AI is a local-first financial intelligence and context engineering platform:
 - CSV/XLSX ingestion, validation, and deterministic expense analysis with Python/Pandas and optionally DuckDB.
 - Duplicate detection, budget-to-actual variance, anomalies, data quality, and policy compliance investigations.
 - Optional LangGraph tool orchestration and Ollama/Qwen-based explanations with safe non-LLM fallback.

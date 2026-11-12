@@ -15,7 +15,7 @@ Inspected source and tests on the active docs/project-documentation branch; main
 | Synthetic policy/evaluation corpus | Missing | only one fictional example policy; no RAG labels |
 | Financial synthetic fixture | Implemented and tested | 1,200 rows; no broad policy-linked corpus |
 | RAG metrics / evaluation UI | Missing | no measured retrieval/answer benchmarks |
-| FP&A scenarios / forecast | Missing | only spending and budget charts |
+| Financial scenarios / forecast | Missing | only spending and budget charts |
 | PDF reports | Implemented and tested | ReportLab, validation, rendered layout tests |
 | Enterprise navigation / green theme | Missing | five tabs, burgundy styling |
 | Startup / CI | Implemented and tested | start.sh, matrix CI |

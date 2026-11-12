@@ -28,7 +28,7 @@ def generate_pdf(report: AuditPDFReport) -> bytes:
             topMargin=23 * mm,
             bottomMargin=21 * mm,
             title="Financial Expense Audit Report",
-            author="ExpenseGuard AI",
+            author="FinContext AI",
             subject=f"{report.period_start} to {report.period_end}; {report.analysis_mode}",
         )
         document.build(

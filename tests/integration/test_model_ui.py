@@ -23,11 +23,18 @@ def setup_ui(monkeypatch, state):
     return app, getter, manager
 
 
+def load_sample(app):
+    next(x for x in app.radio if x.label == "Workspace").set_value("Data & Context").run()
+    next(b for b in app.button if b.label == "Try fictional sample").click().run()
+    next(x for x in app.radio if x.label == "Workspace").set_value("Agent Workflows").run()
+    return app
+
+
 def test_ready_enables_agent_without_download(monkeypatch):
     app, _, manager = setup_ui(monkeypatch, "ready")
     assert not any(b.label == "Download & Enable AI" for b in app.button)
-    next(b for b in app.button if b.label == "Load fictional sample dataset").click().run()
-    assert not next(b for b in app.button if b.label == "Run agent").disabled
+    load_sample(app)
+    assert not next(b for b in app.button if b.label == "Run AI-guided audit").disabled
     manager.return_value.download.assert_not_called()
 
 
@@ -53,8 +60,8 @@ def test_failed_download_remains_usable(monkeypatch):
     next(b for b in app.button if b.label == "Download & Enable AI").click().run()
     assert not app.exception
     assert any("failed" in error.value for error in app.error)
-    next(b for b in app.button if b.label == "Load fictional sample dataset").click().run()
-    assert next(b for b in app.button if b.label == "Run agent").disabled
+    load_sample(app)
+    assert next(b for b in app.button if b.label == "Run AI-guided audit").disabled
     next(b for b in app.button if b.label == "Run complete deterministic audit").click().run()
     assert len(app.session_state["audit"]["results"]) == 4
 
@@ -62,5 +69,5 @@ def test_failed_download_remains_usable(monkeypatch):
 def test_unavailable_has_instructions_and_disabled_agent(monkeypatch):
     app, _, _ = setup_ui(monkeypatch, "unavailable")
     assert any("Ollama" in item.value for item in app.markdown)
-    next(b for b in app.button if b.label == "Load fictional sample dataset").click().run()
-    assert next(b for b in app.button if b.label == "Run agent").disabled
+    load_sample(app)
+    assert next(b for b in app.button if b.label == "Run AI-guided audit").disabled

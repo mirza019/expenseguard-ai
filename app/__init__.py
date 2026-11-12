@@ -1,1 +1,1 @@
-"""ExpenseGuard AI application package."""
+"""FinContext AI application package."""

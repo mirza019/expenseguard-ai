@@ -125,10 +125,15 @@ def test_ui_knowledge_audit_findings_and_evaluation(monkeypatch):
     app = AppTest.from_file(
         Path(__file__).resolve().parents[2] / "app/main.py", default_timeout=120
     ).run()
+    next(x for x in app.radio if x.label == "Workspace").set_value("Data & Context").run()
     next(b for b in app.button if b.label == "Load 2,400-transaction policy demo").click().run()
-    next(b for b in app.button if b.label == "Load / rebuild synthetic policy corpus").click().run()
-    next(b for b in app.button if b.label == "Run Full Audit").click().run()
+    next(b for b in app.button if b.label == "Load fictional policy demo").click().run()
+    assert any(expander.label == "View policy PDF" for expander in app.expander)
+    assert any(control.label == "Page" for control in app.number_input)
+    next(x for x in app.radio if x.label == "Workspace").set_value("Agent Workflows").run()
+    next(b for b in app.button if b.label == "Run complete deterministic audit").click().run()
     assert not app.exception
     assert app.session_state["audit"]["policy_checked"]
     assert len(app.session_state["audit"]["policy_findings"]) == 2400
-    assert any(tab.label == "RAG Evaluation Lab" for tab in app.tabs)
+    next(x for x in app.radio if x.label == "Workspace").set_value("Reports & Governance").run()
+    assert any(tab.label == "Evaluation" for tab in app.tabs)

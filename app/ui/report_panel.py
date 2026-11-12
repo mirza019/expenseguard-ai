@@ -123,7 +123,7 @@ def pdf_report_panel(data: ValidatedData, audit: dict) -> None:
                 "key": key,
                 "bytes": content,
                 "report": verified,
-                "filename": f"ExpenseGuard_Audit_Report_{date.today().isoformat()}.pdf",
+                "filename": f"FinContext_AI_Audit_Report_{date.today().isoformat()}.pdf",
             }
             st.session_state["pdf_artifact"] = artifact
         except ValueError as exc:

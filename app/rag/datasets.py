@@ -63,7 +63,7 @@ def generate_policies(root: Path = DEFAULT_ROOT) -> list[dict]:
             "Employees submit complete records; managers verify purpose; directors approve explicitly "
             "authorized exceptions; finance reconciles transaction exports against monthly allocations. "
             "Review flags do not authorize payment rejection, record modification or fraud allegations. "
-            "This policy is a synthetic portfolio fixture and has no real legal or corporate authority."
+            "This policy is a synthetic product fixture and has no real legal or corporate authority."
         )
         items.append(PageBreak())
         para("SYNTHETIC POLICY — FINANCIAL CONDITIONS", "Heading2")

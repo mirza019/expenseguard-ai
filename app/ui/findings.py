@@ -71,7 +71,12 @@ def findings_panel(data: ValidatedData, audit: dict | None) -> None:
         },
     )
     if not shown.empty:
-        chosen = st.selectbox("Investigate finding", shown["finding_id"].tolist())
+        finding_ids = shown["finding_id"].tolist()
+        chosen = st.selectbox(
+            "Investigate finding", finding_ids, key="finding_investigation_v2"
+        )
+        if chosen not in finding_ids:
+            chosen = finding_ids[0]
         row = shown.loc[shown["finding_id"] == chosen].iloc[0]
         st.write("What happened:", row["status"])
         st.write("Next action:", row["action"])

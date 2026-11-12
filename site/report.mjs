@@ -4,7 +4,7 @@ export function validateReport(value) {
       !['agent', 'deterministic'].includes(value.mode) || !Array.isArray(value.findings) ||
       value.findings.length > 100000 || !Array.isArray(value.tools_run) ||
       !value.tools_run.every(x => ['duplicates', 'budget', 'anomalies', 'missing_data'].includes(x))) {
-    throw new Error('Open a valid ExpenseGuard EUR audit JSON report.');
+    throw new Error('Open a valid FinContext AI EUR audit JSON report.');
   }
   for (const key of ['total_actual_cents', 'total_source_rows', 'eligible_rows', 'excluded_rows', 'flagged_rows']) {
     if (!Number.isSafeInteger(value[key]) || value[key] < 0) throw new Error('Invalid report totals.');

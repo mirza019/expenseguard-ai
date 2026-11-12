@@ -42,6 +42,7 @@ def test_ingestion_row_limit_and_workbook_bomb(monkeypatch):
     with ZipFile(out, "w") as archive:
         archive.writestr("sheet.xml", "x" * 6000)
     monkeypatch.setattr("app.services.ingestion.MAX_BYTES", 1000)
+    monkeypatch.setattr("app.services.ingestion.MAX_XLSX_EXPANDED_BYTES", 5000)
     # compressed bytes stay within the upload limit while expanded bytes do not
     out = io.BytesIO()
     from zipfile import ZIP_DEFLATED

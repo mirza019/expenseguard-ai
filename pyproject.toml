@@ -1,8 +1,8 @@
 [project]
-name = "expenseguard-ai"
+name = "fincontext-ai"
 version = "0.1.0"
 requires-python = ">=3.11,<3.13"
-description = "Evidence-based expense auditing with controlled LangGraph tools"
+description = "Local-first financial intelligence, governed context, and autonomous workflows"
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
@@ -12,7 +12,7 @@ testpaths = ["tests"]
 line-length = 100
 
 [tool.coverage.run]
-source = ["app.services", "app.tools", "app.agents", "app.database", "app.reports", "app.rag", "app.evaluation"]
+source = ["app.services", "app.tools", "app.agents", "app.workflows", "app.database", "app.reports", "app.rag", "app.evaluation"]
 
 [tool.coverage.report]
 show_missing = true

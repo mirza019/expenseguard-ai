@@ -25,6 +25,6 @@ def test_complete_workflow():
     )
     for dimension in ["department", "monthly", "category"]:
         assert int(summarize(data, dimension)["amount_cents"].sum()) == report["total_actual_cents"]
-    assert "ExpenseGuard AI" in markdown_report(report)
+    assert "FinContext AI" in markdown_report(report)
     with pytest.raises(ValueError):
         summarize(data, "DROP TABLE expenses")

@@ -1,4 +1,4 @@
-"""Modest FP&A decision support with explicit assumptions, never causal/forecast certainty."""
+"""Financial decision support with explicit assumptions, never causal/forecast certainty."""
 
 from app.database.duckdb_service import summarize
 from app.services.validation import ValidatedData

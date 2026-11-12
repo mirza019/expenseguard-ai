@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 class Settings:
     ollama_url: str = "http://localhost:11434"
     ollama_model: str = "qwen3:4b-q4_K_M"
-    timeout: int = 60
+    timeout: int = 30
     setup_timeout: int = 5
     max_calls: int = 4
     max_retries: int = 2

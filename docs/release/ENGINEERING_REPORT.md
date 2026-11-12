@@ -1,4 +1,4 @@
-# ExpenseGuard AI — engineering verification report
+# FinContext AI — engineering verification report
 
 Verified locally on Linux/Python 3.12, 10 November 2026. This extends the existing implementation;
 it does not replace it. Stable `main` remains the original scaffold pending review. All implementation
@@ -33,7 +33,7 @@ work is preserved on `docs/project-documentation` for PR #1. No automatic merge 
 | PDF audit reports | Implemented and tested | app/reports/*, services/report_validation.py | rendered A4, long tables, Unicode, reconciliation, indexed policy integration; no LLM needed |
 | Startup / configuration / CI | Implemented and locally tested | start.sh, scripts/check_environment.py, workflows/ | actual launcher reused dependencies and served Streamlit; shell/pytest checks |
 | Windows and target Mac runtime | Implemented but not fully validated | start.ps1, start.sh | Linux verified; PowerShell and Mac M3 performance not executed |
-| Authenticated multiuser/ERP/SSO | Missing, outside portfolio scope | — | no claim of production finance-system integration |
+| Authenticated multiuser/ERP/SSO | Missing, outside local reference scope | — | no claim of production finance-system integration |
 | Optional evaluation PDF | Not implemented (optional) | — | measured JSON downloads and Evaluation Lab available |
 
 Paths abbreviated above are under `app/` unless otherwise stated. Initial gaps are preserved in
@@ -126,14 +126,13 @@ Ordinary GitHub Actions matrix targets Python 3.11/3.12 and includes Ruff, tests
 frontend checks and headless PDF regression. The optional manual benchmark workflow downloads no models.
 Remote CI status is recorded in the PR; local success is not a substitute for a remote run.
 
-## G. Job-relevance mapping
+## G. Demonstrated capabilities
 
-Actual demonstrated skills: FP&A variance and cost-center accountability; financial data validation and
+Actual demonstrated skills: financial variance and cost-center accountability; financial data validation and
 SQL reconciliation; deterministic risk screening; hierarchical context, metadata, historical retrieval
 and grounded citations; bounded LangGraph tool execution; local application delivery, testing and
-reporting. See [JOB_RELEVANCE_MAPPING.md](../JOB_RELEVANCE_MAPPING.md) for feature/source/test/business
-examples and interview demonstrations. The provided earlier job posting concerns Gas Services sales
-intelligence; this project does not claim to implement gas-service pricing, CRM or competitor intelligence.
+reporting. See [CAPABILITY_EVIDENCE.md](../CAPABILITY_EVIDENCE.md) for feature, source, test and
+business-outcome examples. Capabilities not implemented in this repository are not claimed.
 
 ## H. Remaining limitations
 
@@ -152,5 +151,5 @@ No deployment or main merge was performed.
 **Ready with documented limitations.** Deterministic auditing, supported policy intelligence, PDF export,
 measured retrieval, startup and the rendered interface have concrete passing evidence. Present using
 the reproducible October walkthrough and explicitly disclose local-model and general-document limitations.
-Do not present this portfolio release as a certified audit, an independently validated compliance engine
+Do not present this reference release as a certified audit, an independently validated compliance engine
 or a production financial system.

@@ -38,6 +38,14 @@ def test_size(monkeypatch):
         read_upload(b"123", "a.csv")
 
 
+def test_xlsx_expanded_size_limit(monkeypatch):
+    out = BytesIO()
+    pd.DataFrame({"amount": ["12"]}).to_excel(out, index=False)
+    monkeypatch.setattr("app.services.ingestion.MAX_XLSX_EXPANDED_BYTES", 1)
+    with pytest.raises(IngestionError, match="decompressed size"):
+        read_upload(out.getvalue(), "a.xlsx")
+
+
 def test_native_excel_dates_validate():
     from datetime import datetime
 

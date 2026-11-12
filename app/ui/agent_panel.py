@@ -14,7 +14,12 @@ from app.services.validation import ValidatedData
 def audit_panel(data: ValidatedData) -> None:
     """Run independent tools or a complete non-LLM audit."""
     st.subheader("Audit analysis")
-    selected = st.selectbox("Individual analytical check", list(TOOLS))
+    available_tools = list(TOOLS)
+    selected = st.selectbox(
+        "Individual analytical check", available_tools, key="individual_audit_tool_v2"
+    )
+    if selected not in available_tools:
+        selected = available_tools[0]
     if st.button("Run selected check"):
         with st.spinner("Running check…"):
             result = execute_tool(selected, data)
@@ -33,17 +38,44 @@ def audit_panel(data: ValidatedData) -> None:
 
 def agent_panel(data: ValidatedData, model_status: ModelStatus | None = None) -> None:
     """Optional local inference; explicit fallback status is shown in final state."""
-    st.subheader("Local AI agent")
-    st.info(
-        "Agent mode uses LangGraph and your local Ollama service. If unavailable, "
-        "bounded retries switch to a clearly labeled deterministic audit."
+    st.subheader("AI-guided audit")
+    st.write(
+        "Choose what you want to investigate. The AI selects from verified audit checks; "
+        "Python calculates the financial results and your data is not changed."
     )
-    goal = st.text_area(
-        "Audit goal",
-        value="Audit the expenses and identify the biggest financial risks.",
-        max_chars=2000,
+    choices = {
+        "Complete risk review": "Audit the expenses and identify the biggest financial risks.",
+        "Possible duplicate payments": "Find possible duplicate payments and explain why each was flagged.",
+        "Budget overruns": "Which departments exceeded their represented budgets, and by how much?",
+        "Unusually large expenses": "Which unusually large expenses require investigation?",
+        "Missing or invalid data": "Which records have missing or invalid information?",
+        "Custom question": "",
+    }
+    focus = st.selectbox(
+        "What do you want to check?", list(choices), key="ai_audit_focus_v2"
     )
-    if st.button("Run agent", disabled=model_status is None or model_status.state != "ready"):
+    if focus not in choices:
+        focus = "Complete risk review"
+    goal = choices[focus]
+    if focus == "Custom question":
+        goal = st.text_area(
+            "Your audit question",
+            placeholder="Describe the financial issue you want to investigate…",
+            max_chars=2000,
+        )
+    else:
+        st.caption(goal)
+    ready = model_status is not None and model_status.state == "ready"
+    if ready:
+        st.success("Local AI is ready.")
+    else:
+        st.warning("Local AI is unavailable. The standard verified audit still works without it.")
+    if st.button(
+        "Run AI-guided audit",
+        type="primary",
+        width="stretch",
+        disabled=not ready or not goal.strip(),
+    ):
         try:
             with st.spinner("Agent selecting tools and inspecting evidence…"):
                 st.session_state["audit"] = run_audit(
@@ -60,8 +92,10 @@ def agent_panel(data: ValidatedData, model_status: ModelStatus | None = None) ->
             st.error(str(exc))
     audit = st.session_state.get("audit")
     if audit:
-        st.write("Active result mode:", audit["mode"])
-        st.write("Execution trace:", audit["trace"])
+        st.success(
+            f"Audit complete in {audit['mode']} mode. Review the results in "
+            "**Reports & Governance → Findings**."
+        )
         for error in audit["errors"]:
             st.warning(error)
         if audit.get("pdf_error"):
@@ -70,9 +104,12 @@ def agent_panel(data: ValidatedData, model_status: ModelStatus | None = None) ->
             st.download_button(
                 "Download agent-requested PDF",
                 audit["pdf_bytes"],
-                "ExpenseGuard_Agent_Audit_Report.pdf",
+                "FinContext_AI_Agent_Audit_Report.pdf",
                 mime="application/pdf",
             )
+        with st.expander("How the AI reached this result"):
+            st.write("Execution mode:", audit["mode"])
+            st.write("Verified tool activity:", audit["trace"])
 
 
 def report_panel(data: ValidatedData | None = None) -> None:

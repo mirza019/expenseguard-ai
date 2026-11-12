@@ -81,7 +81,7 @@ def test_pdf_rendering_and_content_bounds(generated, tmp_path):
                         text = "".join(s["text"] for s in line["spans"])
                         if not any(
                             token in text
-                            for token in ["ExpenseGuard AI |", "Human review required |", "Page "]
+                            for token in ["FinContext AI |", "Human review required |", "Page "]
                         ):
                             assert y0 >= 55 and y1 < page.rect.height - 48, (page.number, text)
             words = page.get_text("words")

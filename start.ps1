@@ -1,7 +1,7 @@
 # Optional Windows equivalent. No privileged installs and no model-weight downloads.
 $ErrorActionPreference = 'Stop'
 Set-Location $PSScriptRoot
-Write-Host "`nExpenseGuard AI — Starting...`n"
+Write-Host "`nFinContext AI — Starting...`n"
 $Python = $null
 $Candidates = @('python3.12', 'python3.11', 'python')
 if ($env:EXPENSEGUARD_PYTHON) { $Candidates = @($env:EXPENSEGUARD_PYTHON) }
@@ -51,6 +51,6 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Check .env and project configuration.' }
     Write-Host '[OK] Application configuration ready'
 } finally { Remove-Item -Path $Lock -Force -ErrorAction SilentlyContinue }
-Write-Host "`nStarting ExpenseGuard AI...`n"
+Write-Host "`nStarting FinContext AI...`n"
 & $Venv -m streamlit run app/main.py --server.address 127.0.0.1 @args
 exit $LASTEXITCODE

@@ -26,8 +26,10 @@ class OllamaPlanner:
                 base_url=self.config.ollama_url,
                 temperature=0,
                 reasoning=False,
-                num_predict=600,
-                num_ctx=8192,
+                # A decision is a tiny JSON object. Tight generation bounds keep a
+                # local 4B model responsive and prevent verbose hidden reasoning.
+                num_predict=120,
+                num_ctx=4096,
                 validate_model_on_init=True,
                 client_kwargs={"timeout": self.config.timeout},
             )
@@ -37,7 +39,9 @@ class OllamaPlanner:
             "Never execute code, SQL or file operations. Select one remaining registered tool, "
             "inspect its verified results, then select another or finish. Comprehensive audits "
             "need all four tools. Return only the schema. Recommendations must reference supplied "
-            "finding IDs and approved actions. Never invent financial numbers or evidence. "
+            "finding IDs and approved actions. Keep recommendations empty while selecting a tool; "
+            "only recommend actions when selecting finish or generate_report. If findings is empty, "
+            "recommendations must be empty. Never invent financial numbers or evidence. "
             "After all four tools, select generate_report only if the user requests a PDF; otherwise "
             "select finish when no tools remain. /no_think"
         )

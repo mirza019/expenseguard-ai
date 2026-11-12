@@ -119,7 +119,7 @@ def story(report: AuditPDFReport, images: dict[str, bytes]) -> list:
     items.extend(
         [
             Spacer(1, 24 * mm),
-            p("EXPENSEGUARD AI", "Heading2"),
+            p("FINCONTEXT AI", "Heading2"),
             p("Financial Expense\nAudit Report", "Title"),
             Spacer(1, 9 * mm),
         ]
@@ -144,7 +144,7 @@ def story(report: AuditPDFReport, images: dict[str, bytes]) -> list:
     items.extend(
         [
             p(
-                "Confidential when populated with real records. Independent portfolio application; "
+                "Confidential when populated with real records. Local-first financial analysis application; "
                 "this report supports human review and is not a certified financial audit."
             ),
             PageBreak(),
@@ -357,7 +357,7 @@ def page_chrome(canvas, doc) -> None:
     canvas.line(18 * mm, 281 * mm, 192 * mm, 281 * mm)
     canvas.setFont("EG", 8)
     canvas.setFillColor(WINE)
-    canvas.drawString(18 * mm, 285 * mm, "ExpenseGuard AI | Financial Expense Audit Report")
+    canvas.drawString(18 * mm, 285 * mm, "FinContext AI | Financial Expense Audit Report")
     canvas.setFillColor(colors.HexColor("#706773"))
     canvas.drawString(18 * mm, 12 * mm, "Human review required | Not a certified financial audit")
     canvas.drawRightString(192 * mm, 12 * mm, f"Page {doc.page}")

@@ -4,7 +4,9 @@ backgroundColor = "#F8FAF8"
 secondaryBackgroundColor = "#EAF4EE"
 textColor = "#172B24"
 [server]
+port = 8503
 maxUploadSize = 10
+enableWebsocketCompression = false
 
 [browser]
 gatherUsageStats = false

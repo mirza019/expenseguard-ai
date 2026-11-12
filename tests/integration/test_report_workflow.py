@@ -65,9 +65,12 @@ def test_streamlit_generation_download_and_no_rerun_render(monkeypatch):
     app = AppTest.from_file(
         Path(__file__).resolve().parents[2] / "app/main.py", default_timeout=90
     ).run()
-    next(b for b in app.button if b.label == "Load fictional sample dataset").click().run()
+    next(x for x in app.radio if x.label == "Workspace").set_value("Data & Context").run()
+    next(b for b in app.button if b.label == "Try fictional sample").click().run()
+    next(x for x in app.radio if x.label == "Workspace").set_value("Agent Workflows").run()
     next(b for b in app.button if b.label == "Run complete deterministic audit").click().run()
     assert not app.exception
+    next(x for x in app.radio if x.label == "Workspace").set_value("Reports & Governance").run()
     next(b for b in app.button if b.label == "Generate PDF Audit Report").click().run()
     assert not app.exception
     artifact = app.session_state["pdf_artifact"]
@@ -97,8 +100,11 @@ def test_selected_period_audit_is_displayed_and_reused_across_options(monkeypatc
     app = AppTest.from_file(
         Path(__file__).resolve().parents[2] / "app/main.py", default_timeout=90
     ).run()
-    next(b for b in app.button if b.label == "Load fictional sample dataset").click().run()
+    next(x for x in app.radio if x.label == "Workspace").set_value("Data & Context").run()
+    next(b for b in app.button if b.label == "Try fictional sample").click().run()
+    next(x for x in app.radio if x.label == "Workspace").set_value("Agent Workflows").run()
     next(b for b in app.button if b.label == "Run complete deterministic audit").click().run()
+    next(x for x in app.radio if x.label == "Workspace").set_value("Reports & Governance").run()
     next(w for w in app.date_input if w.label == "Reporting period end").set_value(
         date(2025, 1, 28)
     ).run()
